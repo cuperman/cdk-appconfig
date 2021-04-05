@@ -1,12 +1,37 @@
-# Welcome to your CDK TypeScript Construct Library project!
+# CDK AppConfig
 
-You should explore the contents of this project. It demonstrates a CDK Construct Library that includes a construct (`CdkAppconfig`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+High-level CDK constructs for AWS AppConfig
 
-The construct defines an interface (`CdkAppconfigProps`) to configure the visibility timeout of the queue.
+## Example
 
-## Useful commands
+```ts
+import * as cdk from '@aws-cdk/core';
+import * as appconfig from '@cuperman/cdk-appconfig';
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
+class MyConfigStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+
+    const application = new appconfig.Application(this, 'MyApplication', {
+      name: 'MyApp'
+    });
+
+    new appconfig.Environment(this, 'MyEnvironment', {
+      application,
+      name: 'MyEnv'
+    });
+
+    const configurationProfile = new appconfig.HostedConfigurationProfile(this, 'MyConfiguration', {
+      application,
+      name: 'MyConfig'
+    });
+
+    new appconfig.HostedConfigurationVersion(this, 'MyHostedConfigurationVersion', {
+      application,
+      configurationProfile,
+      contentType: appconfig.HostedConfigurationContentType.TEXT,
+      content: 'My hosted configuration content'
+    });
+  }
+}
+```
