@@ -20,6 +20,8 @@
     "@aws-cdk/core": "1.96.0"
   },
   "dependencies": {
+    "@aws-cdk/aws-appconfig": "^1.96.0",
     "@aws-cdk/core": "1.96.0"
-  }
+  },
+  "license": "MIT"
 }
