@@ -30,7 +30,7 @@ export class Application extends cdk.Resource implements IApplication, cdk.ITagg
     this.applicationId = this.resource.ref;
   }
 
-  prepare() {
+  protected prepare() {
     this.resource.tags = this.tags.renderTags();
   }
 }
@@ -46,9 +46,9 @@ export interface ConfigurationProfileProps {
 }
 
 export class HostedConfigurationProfile extends cdk.Resource implements IConfigurationProfile, cdk.ITaggable {
-  public configurationProfileId: string;
-  public tags: cdk.TagManager;
-  private resource: appconfig.CfnConfigurationProfile;
+  public readonly configurationProfileId: string;
+  public readonly tags: cdk.TagManager;
+  private readonly resource: appconfig.CfnConfigurationProfile;
 
   constructor(scope: cdk.Construct, id: string, props: ConfigurationProfileProps) {
     super(scope, id, {
@@ -69,7 +69,7 @@ export class HostedConfigurationProfile extends cdk.Resource implements IConfigu
     this.configurationProfileId = this.resource.ref;
   }
 
-  prepare() {
+  protected prepare() {
     this.resource.tags = this.tags.renderTags();
   }
 }
@@ -109,7 +109,7 @@ export class Environment extends cdk.Resource implements cdk.ITaggable {
     this.environmentId = this.resource.ref;
   }
 
-  prepare() {
+  protected prepare() {
     this.resource.tags = this.tags.renderTags();
   }
 }
