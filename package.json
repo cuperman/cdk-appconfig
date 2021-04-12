@@ -1,5 +1,5 @@
 {
-  "name": "cdk-appconfig",
+  "name": "@cuperman/cdk-appconfig",
   "description": "High-level CDK Constructs for AWS AppConfig",
   "license": "MIT",
   "version": "0.1.0",
@@ -12,9 +12,13 @@
     "type": "git",
     "url": "https://github.com/cuperman/cdk-appconfig"
   },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com"
+  },
   "main": "lib/appconfig.js",
   "types": "lib/appconfig.d.ts",
   "scripts": {
+    "clean": "rm -rf ./dist",
     "build": "jsii",
     "watch": "jsii --watch",
     "package": "jsii-pacmak",
