@@ -1,17 +1,18 @@
-# Ignore typescript files
 *.js
 !jest.config.js
 *.d.ts
 node_modules/
+yarn-error.log
 
 # CDK asset staging directory
 .cdk.staging
 cdk.out
 
-# Ignore user config files
-.vscode/
-
 # Ignore jsii files
 .jsii
 *.tsbuildinfo
 dist/
+
+# Ignore user config files
+.vscode/
+
