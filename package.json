@@ -15,8 +15,8 @@
   "publishConfig": {
     "registry":"https://npm.pkg.github.com"
   },
-  "main": "lib/appconfig.js",
-  "types": "lib/appconfig.d.ts",
+  "main": "lib/appconfig/index.js",
+  "types": "lib/appconfig/index.d.ts",
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "jsii",
