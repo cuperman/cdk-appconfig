@@ -11,6 +11,7 @@ export interface ConfigurationProfileProps {
   readonly application: Application;
   readonly name: string;
   readonly description?: string;
+  readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
 export class HostedConfigurationProfile extends cdk.Resource implements IConfigurationProfile, cdk.ITaggable {
@@ -23,6 +24,8 @@ export class HostedConfigurationProfile extends cdk.Resource implements IConfigu
       physicalName: props.name
     });
 
+    const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.RETAIN;
+
     this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::ConfigurationProfile');
 
     this.resource = new appconfig.CfnConfigurationProfile(this, 'Resource', {
@@ -33,6 +36,8 @@ export class HostedConfigurationProfile extends cdk.Resource implements IConfigu
       // todo: validators
       // validators: [],
     });
+
+    this.resource.applyRemovalPolicy(props.removalPolicy || DEFAULT_REMOVAL_POLICY);
 
     this.configurationProfileId = this.resource.ref;
   }

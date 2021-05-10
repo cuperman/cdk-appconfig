@@ -8,6 +8,7 @@ export interface IApplication extends cdk.IResource {
 export interface ApplicationProps {
   readonly name: string;
   readonly description?: string;
+  readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
 export class Application extends cdk.Resource implements IApplication, cdk.ITaggable {
@@ -20,12 +21,16 @@ export class Application extends cdk.Resource implements IApplication, cdk.ITagg
       physicalName: props.name
     });
 
+    const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.RETAIN;
+
     this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::Application');
 
     this.resource = new appconfig.CfnApplication(this, 'Resource', {
       name: props.name,
       description: props.description
     });
+
+    this.resource.applyRemovalPolicy(props.removalPolicy || DEFAULT_REMOVAL_POLICY);
 
     this.applicationId = this.resource.ref;
   }

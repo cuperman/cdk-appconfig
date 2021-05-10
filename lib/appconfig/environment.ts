@@ -7,6 +7,7 @@ export interface EnvironmentProps {
   readonly application: Application;
   readonly name: string;
   readonly description?: string;
+  readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
 export class Environment extends cdk.Resource implements cdk.ITaggable {
@@ -19,6 +20,8 @@ export class Environment extends cdk.Resource implements cdk.ITaggable {
       physicalName: props.name
     });
 
+    const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.DESTROY;
+
     this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::Environment');
 
     this.resource = new appconfig.CfnEnvironment(this, 'Resource', {
@@ -28,6 +31,8 @@ export class Environment extends cdk.Resource implements cdk.ITaggable {
       // TODO: monitors
       // monitors: []
     });
+
+    this.resource.applyRemovalPolicy(props.removalPolicy || DEFAULT_REMOVAL_POLICY);
 
     this.environmentId = this.resource.ref;
   }
