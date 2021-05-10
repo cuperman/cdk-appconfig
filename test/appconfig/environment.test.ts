@@ -1,4 +1,5 @@
-import { expect as expectCDK, haveResource, anything } from '@aws-cdk/assert';
+import { expect as expectCDK, haveResource, anything, ResourcePart } from '@aws-cdk/assert';
+import * as cdk from '@aws-cdk/core';
 
 import { buildCdkStack, buildApplication } from './helpers';
 import { Environment } from '../../lib/appconfig';
@@ -28,6 +29,19 @@ describe('AppConfig', () => {
           })
         );
       });
+
+      it('deletes environments by default, because it can', () => {
+        expectCDK(stack).to(
+          haveResource(
+            'AWS::AppConfig::Environment',
+            {
+              UpdateReplacePolicy: 'Delete',
+              DeletionPolicy: 'Delete'
+            },
+            ResourcePart.CompleteDefinition
+          )
+        );
+      });
     });
 
     describe('with optional props', () => {
@@ -37,18 +51,27 @@ describe('AppConfig', () => {
       new Environment(stack, 'MyEnvironment', {
         application,
         name: 'MyEnv',
-        description: 'My environment'
+        description: 'My environment',
+        removalPolicy: cdk.RemovalPolicy.RETAIN
       });
 
       it('creates an environment resource with optional properties', () => {
         expectCDK(stack).to(
-          haveResource('AWS::AppConfig::Environment', {
-            ApplicationId: {
-              Ref: anything()
+          haveResource(
+            'AWS::AppConfig::Environment',
+            {
+              Properties: {
+                ApplicationId: {
+                  Ref: anything()
+                },
+                Name: 'MyEnv',
+                Description: 'My environment'
+              },
+              UpdateReplacePolicy: 'Retain',
+              DeletionPolicy: 'Retain'
             },
-            Name: 'MyEnv',
-            Description: 'My environment'
-          })
+            ResourcePart.CompleteDefinition
+          )
         );
       });
     });

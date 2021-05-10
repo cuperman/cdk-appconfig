@@ -28,6 +28,7 @@
     "@aws-cdk/assert": "^1.0.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
+    "aws-cdk": "^1.0.0",
     "jest": "^26.4.2",
     "jsii": "^1.27.0",
     "jsii-pacmak": "^1.27.0",
@@ -35,13 +36,24 @@
     "typescript": "~3.9.7"
   },
   "peerDependencies": {
+    "@aws-cdk/assets": "^1.0.0",
     "@aws-cdk/aws-appconfig": "^1.0.0",
+    "@aws-cdk/aws-iam": "^1.0.0",
+    "@aws-cdk/aws-lambda": "^1.0.0",
+    "@aws-cdk/aws-s3": "^1.0.0",
+    "@aws-cdk/aws-s3-assets": "^1.0.0",
     "@aws-cdk/core": "^1.0.0",
+    "@aws-cdk/custom-resources": "^1.0.0",
     "constructs": "^3.0.0"
   },
   "dependencies": {
     "@aws-cdk/aws-appconfig": "^1.0.0",
-    "@aws-cdk/core": "^1.0.0"
+    "@aws-cdk/aws-iam": "^1.0.0",
+    "@aws-cdk/aws-lambda": "^1.0.0",
+    "@aws-cdk/aws-s3": "^1.0.0",
+    "@aws-cdk/aws-s3-assets": "^1.0.0",
+    "@aws-cdk/core": "^1.0.0",
+    "@aws-cdk/custom-resources": "^1.0.0"
   },
   "jsii": {
     "outdir": "dist",

@@ -1,5 +1,7 @@
+import * as path from 'path';
+
 import * as cdk from '@aws-cdk/core';
-import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
+import { expect as expectCDK, haveResource, anything } from '@aws-cdk/assert';
 
 import * as appconfig from '../lib/appconfig';
 
@@ -7,25 +9,25 @@ class ExampleStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const application = new appconfig.Application(this, 'MyApplication', {
-      name: 'MyApplication'
+    const application = new appconfig.Application(this, 'MyApp', {
+      name: 'My Application'
     });
 
-    new appconfig.Environment(this, 'MyEnvironment', {
+    new appconfig.Environment(this, 'MyEnv', {
       application,
-      name: 'MyEnvironment'
+      name: 'Prod'
     });
 
-    const configurationProfile = new appconfig.HostedConfigurationProfile(this, 'MyConfiguration', {
+    const configurationProfile = new appconfig.HostedConfigurationProfile(this, 'MyConfig', {
       application,
-      name: 'MyConfiguration'
+      name: 'My Config'
     });
 
-    new appconfig.HostedConfigurationVersion(this, 'MyHostedConfigurationVersion', {
+    new appconfig.HostedConfigurationVersion(this, 'MyConfigContent', {
       application,
       configurationProfile,
-      contentType: appconfig.HostedConfigurationContentType.TEXT,
-      content: 'My hosted configuration content'
+      contentType: appconfig.ContentType.YAML,
+      content: appconfig.Content.fromAsset(path.join(__dirname, './__fixtures__/config.yml'))
     });
   }
 }
@@ -46,7 +48,17 @@ describe('ExampleStack', () => {
     expectCDK(example).to(haveResource('AWS::AppConfig::ConfigurationProfile'));
   });
 
-  it('has a hosted configuration version', () => {
-    expectCDK(example).to(haveResource('AWS::AppConfig::HostedConfigurationVersion'));
+  it('has a hosted configuration version with asset content', () => {
+    expectCDK(example).to(
+      haveResource('Custom::HostedConfigurationVersion', {
+        ContentType: 'application/x-yaml',
+        ContentConfig: {
+          S3Location: {
+            BucketName: { Ref: anything() },
+            ObjectKey: anything()
+          }
+        }
+      })
+    );
   });
 });

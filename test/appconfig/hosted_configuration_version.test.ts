@@ -1,4 +1,8 @@
-import { expect as expectCDK, haveResource, anything } from '@aws-cdk/assert';
+import * as path from 'path';
+
+import { expect as expectCDK, haveResource, anything, ResourcePart, haveResourceLike } from '@aws-cdk/assert';
+import * as cdk from '@aws-cdk/core';
+import * as s3 from '@aws-cdk/aws-s3';
 
 import { buildCdkStack, buildApplication, buildHostedProfile } from './helpers';
 import * as appconfig from '../../lib/appconfig';
@@ -13,8 +17,8 @@ describe('AppConfig', () => {
       const configVersion = new appconfig.HostedConfigurationVersion(stack, 'MyConfigVersion', {
         application,
         configurationProfile: profile,
-        contentType: appconfig.HostedConfigurationContentType.TEXT,
-        content: 'My configuration content'
+        contentType: appconfig.ContentType.TEXT,
+        content: appconfig.Content.fromInline('My configuration content')
       });
 
       it('has a version number', () => {
@@ -23,15 +27,42 @@ describe('AppConfig', () => {
 
       it('creates a hosted configuration version resource with required properties', () => {
         expectCDK(stack).to(
-          haveResource('AWS::AppConfig::HostedConfigurationVersion', {
+          haveResource('Custom::HostedConfigurationVersion', {
             ApplicationId: {
               Ref: anything()
             },
             ConfigurationProfileId: {
               Ref: anything()
             },
-            ContentType: 'text/plain',
-            Content: 'My configuration content'
+            ContentType: 'text/plain'
+          })
+        );
+      });
+
+      it('retains old versions by default, to preserve version history', () => {
+        expectCDK(stack).to(
+          haveResource(
+            'Custom::HostedConfigurationVersion',
+            {
+              UpdateReplacePolicy: 'Retain',
+              DeletionPolicy: 'Retain'
+            },
+            ResourcePart.CompleteDefinition
+          )
+        );
+      });
+
+      it('has access to create and delete hosted configuration versions', () => {
+        expectCDK(stack).to(
+          haveResourceLike('AWS::IAM::Policy', {
+            PolicyDocument: {
+              Statement: [
+                {
+                  Action: ['appconfig:CreateHostedConfigurationVersion', 'appconfig:DeleteHostedConfigurationVersion'],
+                  Effect: 'Allow'
+                }
+              ]
+            }
           })
         );
       });
@@ -45,23 +76,130 @@ describe('AppConfig', () => {
       new appconfig.HostedConfigurationVersion(stack, 'MyConfigVersion', {
         application,
         configurationProfile: profile,
-        contentType: appconfig.HostedConfigurationContentType.TEXT,
-        content: 'My configuration content',
-        description: 'My hosted configuration version'
+        contentType: appconfig.ContentType.TEXT,
+        content: appconfig.Content.fromInline('My configuration content'),
+        description: 'My hosted configuration version',
+        removalPolicy: cdk.RemovalPolicy.DESTROY
       });
 
       it('creates a hosted configuration version resource with optional properties', () => {
         expectCDK(stack).to(
-          haveResource('AWS::AppConfig::HostedConfigurationVersion', {
-            ApplicationId: {
-              Ref: anything()
+          haveResourceLike(
+            'Custom::HostedConfigurationVersion',
+            {
+              Properties: {
+                ApplicationId: {
+                  Ref: anything()
+                },
+                ConfigurationProfileId: {
+                  Ref: anything()
+                },
+                ContentType: 'text/plain',
+                Description: 'My hosted configuration version'
+              },
+              UpdateReplacePolicy: 'Delete',
+              DeletionPolicy: 'Delete'
             },
-            ConfigurationProfileId: {
-              Ref: anything()
-            },
+            ResourcePart.CompleteDefinition
+          )
+        );
+      });
+    });
+
+    describe('with inline content', () => {
+      const stack = buildCdkStack();
+      const application = buildApplication(stack);
+      const profile = buildHostedProfile(stack, { application });
+
+      new appconfig.HostedConfigurationVersion(stack, 'MyConfigVersion', {
+        application,
+        configurationProfile: profile,
+        contentType: appconfig.ContentType.TEXT,
+        content: appconfig.Content.fromInline('Hello, World!')
+      });
+
+      it('has a content config with inline content', () => {
+        expectCDK(stack).to(
+          haveResource('Custom::HostedConfigurationVersion', {
             ContentType: 'text/plain',
-            Content: 'My configuration content',
-            Description: 'My hosted configuration version'
+            ContentConfig: {
+              InlineContent: 'Hello, World!'
+            }
+          })
+        );
+      });
+    });
+
+    describe('with asset content', () => {
+      const stack = buildCdkStack();
+      const application = buildApplication(stack);
+      const profile = buildHostedProfile(stack, { application });
+
+      new appconfig.HostedConfigurationVersion(stack, 'MyConfigVersion', {
+        application,
+        configurationProfile: profile,
+        contentType: appconfig.ContentType.YAML,
+        content: appconfig.Content.fromAsset(path.join(__dirname, '../__fixtures__/config.yml'))
+      });
+
+      it('has a content config with s3 location attributes', () => {
+        expectCDK(stack).to(
+          haveResource('Custom::HostedConfigurationVersion', {
+            ContentType: 'application/x-yaml',
+            ContentConfig: {
+              S3Location: {
+                BucketName: { Ref: anything() },
+                ObjectKey: anything()
+              }
+            }
+          })
+        );
+      });
+
+      it('has access to read objects from the bucket', () => {
+        expectCDK(stack).to(
+          haveResourceLike('AWS::IAM::Policy', {
+            PolicyDocument: {
+              Statement: [
+                {
+                  Action: ['appconfig:CreateHostedConfigurationVersion', 'appconfig:DeleteHostedConfigurationVersion'],
+                  Effect: 'Allow'
+                },
+                {
+                  Action: 's3:GetObject*',
+                  Effect: 'Allow'
+                }
+              ]
+            }
+          })
+        );
+      });
+    });
+
+    describe('with bucket content', () => {
+      const stack = buildCdkStack();
+      const application = buildApplication(stack);
+      const profile = buildHostedProfile(stack, { application });
+
+      const configBucket = s3.Bucket.fromBucketName(stack, 'ConfigBucket', 'my-config-bucket');
+
+      new appconfig.HostedConfigurationVersion(stack, 'MyConfigVersion', {
+        application,
+        configurationProfile: profile,
+        contentType: appconfig.ContentType.JSON,
+        content: appconfig.Content.fromBucket(configBucket, 'config.json')
+      });
+
+      it('has a content config with s3 location attributes', () => {
+        expectCDK(stack).to(
+          haveResource('Custom::HostedConfigurationVersion', {
+            ContentType: 'application/json',
+            ContentConfig: {
+              S3Location: {
+                BucketName: 'my-config-bucket',
+                ObjectKey: 'config.json'
+              }
+            }
           })
         );
       });
