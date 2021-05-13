@@ -29,12 +29,8 @@ async function getContent(contentConfig) {
   return response.Body;
 }
 
-async function onCreate(event) {
-  console.log('onCreate', event);
-
-  const props = event.ResourceProperties;
-  console.log('props', props);
-
+async function createConfigurationVersion(props) {
+  console.log('createConfigurationVersion', props);
   const content = await getContent(props.ContentConfig);
 
   const appconfig = new AppConfig();
@@ -50,53 +46,11 @@ async function onCreate(event) {
   const response = await appconfig.createHostedConfigurationVersion(params).promise();
   console.log('appconfig.createHostedConfigurationVersion response', response);
 
-  const physicalId = response.VersionNumber.toString();
-  console.log('physicalId', physicalId);
-
-  return {
-    PhysicalResourceId: physicalId
-  };
+  return response;
 }
-exports.onCreate = onCreate;
 
-async function onUpdate(event) {
-  console.log('onUpdate', event);
-
-  const props = event.ResourceProperties;
-  console.log('props', props);
-
-  const content = await getContent(props.ContentConfig);
-
-  const appconfig = new AppConfig();
-  const params = {
-    ApplicationId: props.ApplicationId,
-    ConfigurationProfileId: props.ConfigurationProfileId,
-    Description: props.Description,
-    ContentType: props.ContentType,
-    Content: content,
-    LatestVersionNumber: props.LatestVersionNumber
-  };
-  console.log('appconfig.createHostedConfigurationVersion params', params);
-  const response = await appconfig.createHostedConfigurationVersion(params).promise();
-  console.log('appconfig.createHostedConfigurationVersion response', response);
-
-  const physicalId = response.VersionNumber.toString();
-  console.log('physicalId', physicalId);
-
-  return {
-    PhysicalResourceId: physicalId
-  };
-}
-exports.onUpdate = onUpdate;
-
-async function onDelete(event) {
-  console.log('onDelete', event);
-
-  const physicalId = event.PhysicalResourceId;
-  console.log('physicalId', physicalId);
-  const props = event.ResourceProperties;
-  console.log('props', props);
-
+async function deleteConfigurationVersion(physicalId, props) {
+  console.log('deleteConfigurationVersion', props);
   const appconfig = new AppConfig();
   const params = {
     ApplicationId: props.ApplicationId,
@@ -107,9 +61,53 @@ async function onDelete(event) {
   const response = await appconfig.deleteHostedConfigurationVersion(params).promise();
   console.log('appconfig.deleteHostedConfigurationVersion response', response);
 
+  return response;
+}
+
+async function onCreate(event) {
+  console.log('onCreate', event);
+
+  const props = event.ResourceProperties;
+  console.log('props', props);
+
+  const response = await createConfigurationVersion(props);
+
+  const physicalId = response.VersionNumber.toString();
+  console.log('physicalId', physicalId);
+
+  return {
+    PhysicalResourceId: physicalId
+  };
+}
+
+async function onUpdate(event) {
+  console.log('onUpdate', event);
+
+  const props = event.ResourceProperties;
+  console.log('props', props);
+
+  const response = await createConfigurationVersion(props);
+
+  const physicalId = response.VersionNumber.toString();
+  console.log('physicalId', physicalId);
+
+  return {
+    PhysicalResourceId: physicalId
+  };
+}
+
+async function onDelete(event) {
+  console.log('onDelete', event);
+
+  const physicalId = event.PhysicalResourceId;
+  console.log('physicalId', physicalId);
+  const props = event.ResourceProperties;
+  console.log('props', props);
+
+  const response = await deleteConfigurationVersion(physicalId, props);
+
   return;
 }
-exports.onDelete = onDelete;
 
 async function onEvent(event, context) {
   console.log('onEvent', event, context);
