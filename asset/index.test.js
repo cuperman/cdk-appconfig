@@ -13,15 +13,19 @@ function buildEvent(overrides = {}) {
       ContentConfig: {
         InlineContent: 'Hello, World!'
       },
-      description: undefined,
-      latestVersionNumber: undefined,
-      initOnly: undefined
+      Description: undefined,
+      LatestVersionNumber: undefined,
+      InitOnly: false
     }
   };
 
   return {
     ...defaults,
-    ...overrides
+    ...overrides,
+    ResourceProperties: {
+      ...defaults.ResourceProperties,
+      ...overrides.ResourceProperties
+    }
   };
 }
 
@@ -46,25 +50,49 @@ describe('Asset', () => {
       });
 
       describe('when RequestType is "Update"', () => {
-        const event = buildEvent({
-          RequestType: 'Update'
-        });
-
-        it('creates a new hosted configuration version', async () => {
-          AppConfig.mockAwsResolvedValueOnce('createHostedConfigurationVersion', {
-            VersionNumber: 2
+        describe('when InitOnly is false', () => {
+          const event = buildEvent({
+            RequestType: 'Update',
+            PhysicalResourceId: '1',
+            ResourceProperties: {
+              InitOnly: false
+            }
           });
 
-          const response = await index.onEvent(event);
-          expect(response).toEqual({
-            PhysicalResourceId: '2'
+          it('creates a new hosted configuration version', async () => {
+            AppConfig.mockAwsResolvedValueOnce('createHostedConfigurationVersion', {
+              VersionNumber: 2
+            });
+
+            const response = await index.onEvent(event);
+            expect(response).toEqual({
+              PhysicalResourceId: '2'
+            });
+          });
+        });
+
+        describe('when InitOnly is true', () => {
+          const event = buildEvent({
+            RequestType: 'Update',
+            PhysicalResourceId: '1',
+            ResourceProperties: {
+              InitOnly: true
+            }
+          });
+
+          it('does nothing and returns the same physical id', async () => {
+            const response = await index.onEvent(event);
+            expect(response).toEqual({
+              PhysicalResourceId: '1'
+            });
           });
         });
       });
 
       describe('when RequestType is "Delete"', () => {
         const event = buildEvent({
-          RequestType: 'Delete'
+          RequestType: 'Delete',
+          PhysicalResourceId: '1'
         });
 
         it('deletes a new hosted configuration version', async () => {

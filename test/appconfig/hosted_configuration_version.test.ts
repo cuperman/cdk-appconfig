@@ -39,6 +39,14 @@ describe('AppConfig', () => {
         );
       });
 
+      it('sets explicitly sets InitOnly to false', () => {
+        expectCDK(stack).to(
+          haveResource('Custom::HostedConfigurationVersion', {
+            InitOnly: false
+          })
+        );
+      });
+
       it('retains old versions by default, to preserve version history', () => {
         expectCDK(stack).to(
           haveResource(
@@ -79,7 +87,8 @@ describe('AppConfig', () => {
         contentType: appconfig.ContentType.TEXT,
         content: appconfig.Content.fromInline('My configuration content'),
         description: 'My hosted configuration version',
-        removalPolicy: cdk.RemovalPolicy.DESTROY
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        initOnly: true
       });
 
       it('creates a hosted configuration version resource with optional properties', () => {
@@ -95,7 +104,8 @@ describe('AppConfig', () => {
                   Ref: anything()
                 },
                 ContentType: 'text/plain',
-                Description: 'My hosted configuration version'
+                Description: 'My hosted configuration version',
+                InitOnly: true
               },
               UpdateReplacePolicy: 'Delete',
               DeletionPolicy: 'Delete'
