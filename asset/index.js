@@ -83,16 +83,23 @@ async function onCreate(event) {
 async function onUpdate(event) {
   console.log('onUpdate', event);
 
+  const physicalId = event.PhysicalResourceId;
+  console.log('physicalId', physicalId);
   const props = event.ResourceProperties;
   console.log('props', props);
 
+  if (props.InitOnly) {
+    console.log('Init Only; skipping update');
+    return { PhysicalResourceId: physicalId };
+  }
+
   const response = await createConfigurationVersion(props);
 
-  const physicalId = response.VersionNumber.toString();
-  console.log('physicalId', physicalId);
+  const newPhysicalId = response.VersionNumber.toString();
+  console.log('newPhysicalId', newPhysicalId);
 
   return {
-    PhysicalResourceId: physicalId
+    PhysicalResourceId: newPhysicalId
   };
 }
 

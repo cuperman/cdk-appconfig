@@ -27,6 +27,7 @@ export interface HostedConfigurationVersionProps {
   readonly content: Content;
   readonly description?: string;
   readonly latestVersionNumber?: string;
+  readonly initOnly?: boolean;
   readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
@@ -80,7 +81,8 @@ export class HostedConfigurationVersion extends cdk.Resource {
         contentType: props.contentType,
         contentConfig: uppercaseProperties(contentConfig),
         description: props.description,
-        latestVersionNumber: props.latestVersionNumber
+        latestVersionNumber: props.latestVersionNumber,
+        initOnly: !!props.initOnly
       },
       removalPolicy: props.removalPolicy || DEFAULT_REMOVAL_POLICY
     });
