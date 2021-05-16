@@ -1,8 +1,9 @@
 import { expect as expectCDK, haveResource, anything, ResourcePart } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
+import * as lambda from '@aws-cdk/aws-lambda';
 
 import { buildCdkStack, buildApplication } from './helpers';
-import { HostedConfigurationProfile } from '../../lib/appconfig';
+import { HostedConfigurationProfile, JsonSchemaValidator, LambdaValidator } from '../../lib/appconfig';
 
 describe('AppConfig', () => {
   describe('HostedConfigurationProfile', () => {
@@ -93,6 +94,63 @@ describe('AppConfig', () => {
             Tags: [
               { Key: 'Foo', Value: 'Bar' },
               { Key: 'Kanye', Value: 'West' }
+            ]
+          })
+        );
+      });
+    });
+
+    describe('with inline json schema validator', () => {
+      const stack = buildCdkStack();
+      const application = buildApplication(stack);
+
+      new HostedConfigurationProfile(stack, 'MyProfile', {
+        application,
+        name: 'MyProfile',
+        validators: [
+          JsonSchemaValidator.fromInline('{"$schema": "http://json-schema.org/draft/2019-09/schema#","type":"object"}')
+        ]
+      });
+
+      it('includes validator configurations', () => {
+        expectCDK(stack).to(
+          haveResource('AWS::AppConfig::ConfigurationProfile', {
+            Name: 'MyProfile',
+            Validators: [
+              {
+                Type: 'JSON_SCHEMA',
+                Content: '{"$schema": "http://json-schema.org/draft/2019-09/schema#","type":"object"}'
+              }
+            ]
+          })
+        );
+      });
+    });
+
+    describe('with lambda validator', () => {
+      const stack = buildCdkStack();
+      const application = buildApplication(stack);
+      const lambdaFunction = lambda.Function.fromFunctionArn(
+        stack,
+        'MyLambda',
+        'arn:aws:lambda:us-east-1:123456789012:function:my-function'
+      );
+
+      new HostedConfigurationProfile(stack, 'MyProfile', {
+        application,
+        name: 'MyProfile',
+        validators: [LambdaValidator.fromLambdaFunction(lambdaFunction)]
+      });
+
+      it('includes validator configurations', () => {
+        expectCDK(stack).to(
+          haveResource('AWS::AppConfig::ConfigurationProfile', {
+            Name: 'MyProfile',
+            Validators: [
+              {
+                Type: 'LAMBDA',
+                Content: 'arn:aws:lambda:us-east-1:123456789012:function:my-function'
+              }
             ]
           })
         );

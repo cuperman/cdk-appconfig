@@ -2,6 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as appconfig from '@aws-cdk/aws-appconfig';
 
 import { Application } from './application';
+import { Validator } from './validator';
 
 export interface IConfigurationProfile extends cdk.IResource {
   readonly configurationProfileId: string;
@@ -10,6 +11,7 @@ export interface IConfigurationProfile extends cdk.IResource {
 export interface ConfigurationProfileProps {
   readonly application: Application;
   readonly name: string;
+  readonly validators?: Validator[];
   readonly description?: string;
   readonly removalPolicy?: cdk.RemovalPolicy;
 }
@@ -28,13 +30,14 @@ export class HostedConfigurationProfile extends cdk.Resource implements IConfigu
 
     this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::ConfigurationProfile');
 
+    const validatorConfigs = props.validators?.map((validator) => validator.bind(this));
+
     this.resource = new appconfig.CfnConfigurationProfile(this, 'Resource', {
       applicationId: props.application.applicationId,
       name: props.name,
       description: props.description,
-      locationUri: 'hosted'
-      // todo: validators
-      // validators: [],
+      locationUri: 'hosted',
+      validators: validatorConfigs
     });
 
     this.resource.applyRemovalPolicy(props.removalPolicy || DEFAULT_REMOVAL_POLICY);
