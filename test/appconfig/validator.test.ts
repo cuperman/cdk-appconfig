@@ -1,7 +1,13 @@
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 
-import { JsonSchemaValidator, InlineJsonSchemaValidator, LambdaValidator } from '../../lib/appconfig';
+import {
+  JsonSchemaValidator,
+  InlineJsonSchemaValidator,
+  LambdaValidator,
+  Application,
+  HostedConfigurationProfile
+} from '../../lib/appconfig';
 import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
 
 describe('AppConfig', () => {
@@ -38,39 +44,56 @@ describe('AppConfig', () => {
 
   describe('LambdaValidator', () => {
     describe('fromLambdaFunction', () => {
+      const app = new Application(stack, 'MyApp', {
+        name: 'My App'
+      });
       const lambdaValidatorHandler = new lambda.Function(stack, 'LambdaValidatorHandler', {
         runtime: lambda.Runtime.NODEJS_12_X,
         code: lambda.Code.fromInline(`
-          exports.handler = function(event) {
-            return true;
-          };
-        `),
+            exports.handler = function(event) {
+              return true;
+            };
+          `),
         handler: 'index.handler'
       });
       const lambdaValidator = LambdaValidator.fromLambdaFunction(lambdaValidatorHandler);
+      new HostedConfigurationProfile(stack, 'MyProfile', {
+        application: app,
+        name: 'My Profile',
+        validators: [lambdaValidator]
+      });
+
+      const lambdaValidatorHandlerId = stack.getLogicalId(
+        lambdaValidatorHandler.node.defaultChild as lambda.CfnFunction
+      );
 
       it('returns a LambdaValidator object', () => {
         expect(lambdaValidator).toBeInstanceOf(LambdaValidator);
       });
 
       describe('on bind', () => {
-        const validatorConfig = lambdaValidator.bind(stack);
-
-        // FIXME:
-        xit('returns a ContentConfig with a reference to a lambda function', () => {
-          expect(validatorConfig.type).toEqual('LAMBDA');
-          expect(validatorConfig.content).toEqual({
-            'Fn::GetAtt': [cdk.Names.uniqueId(lambdaValidatorHandler), 'Arn']
-          });
+        it('returns a ValidatorConfig with a reference to a lambda function', () => {
+          expectCDK(stack).to(
+            haveResource('AWS::AppConfig::ConfigurationProfile', {
+              Name: 'My Profile',
+              Validators: [
+                {
+                  Type: 'LAMBDA',
+                  Content: {
+                    'Fn::GetAtt': [lambdaValidatorHandlerId, 'Arn']
+                  }
+                }
+              ]
+            })
+          );
         });
 
-        // FIXME:
-        xit('allows appconfig to invoke it', () => {
+        it('allows appconfig to invoke it', () => {
           expectCDK(stack).to(
             haveResource('AWS::Lambda::Permission', {
               Action: 'lambda:InvokeFunction',
               FunctionName: {
-                'Fn::GetAtt': [cdk.Names.uniqueId(lambdaValidatorHandler), 'Arn']
+                'Fn::GetAtt': [lambdaValidatorHandlerId, 'Arn']
               },
               Principal: 'appconfig.amazonaws.com'
             })
