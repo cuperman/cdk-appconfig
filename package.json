@@ -2,7 +2,7 @@
   "name": "@cuperman/cdk-appconfig",
   "description": "High-level CDK Constructs for AWS AppConfig",
   "license": "MIT",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "stability": "stable",
   "author": {
     "name": "Jeff Cooper",
@@ -13,7 +13,7 @@
     "url": "https://github.com/cuperman/cdk-appconfig"
   },
   "publishConfig": {
-    "registry":"https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com"
   },
   "main": "lib/appconfig/index.js",
   "types": "lib/appconfig/index.d.ts",
