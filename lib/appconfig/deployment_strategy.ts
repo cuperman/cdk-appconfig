@@ -5,7 +5,7 @@ export interface IDeploymentStrategy extends cdk.IResource {
   readonly deploymentStrategyId: string;
 }
 
-export class DeploymentStrategyPlaceholder extends cdk.Resource implements IDeploymentStrategy {
+export class DeploymentStrategyImport extends cdk.Resource implements IDeploymentStrategy {
   public deploymentStrategyId: string;
 
   constructor(scope: cdk.Construct, id: string, deploymentStrategyId: string) {
@@ -20,29 +20,62 @@ export enum PredefinedDeploymentStrategy {
   CANARY_10_PERCENT_20_MINUTES = 'AppConfig.Canary10Percent20Minutes'
 }
 
+export enum DeploymentStrategyReplication {
+  NONE = 'NONE',
+  SSM_DOCUMENT = 'SSM_DOCUMENT'
+}
+
+export enum DeploymentStrategyGrowthType {
+  EXPONENTIAL = 'EXPONENTIAL',
+  LINEAR = 'LINEAR'
+}
+
 export interface DeploymentStrategyProps {
   readonly name: string;
+  readonly deploymentDurationInMinutes?: number;
+  readonly growthFactor?: number;
+  readonly replicateTo?: DeploymentStrategyReplication;
+  readonly description?: string;
+  readonly finalBakeTimeInMinutes?: number;
+  readonly growthType?: DeploymentStrategyGrowthType;
+  // TODO
+  // readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
 export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrategy {
   public readonly deploymentStrategyId: string;
+  public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnDeploymentStrategy;
 
   constructor(scope: cdk.Construct, id: string, props: DeploymentStrategyProps) {
-    super(scope, id);
+    super(scope, id, {
+      physicalName: props.name
+    });
+
+    const DEFAULT_DEPLOYMENT_DURATION_IN_MINUTES = 0;
+    const DEFAULT_GROWTH_FACTOR = 100;
+    const DEFAULT_REPLICATION = DeploymentStrategyReplication.NONE;
+
+    this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::DeploymentStrategy');
 
     this.resource = new appconfig.CfnDeploymentStrategy(this, 'Resource', {
-      deploymentDurationInMinutes: 0,
-      growthFactor: 100,
       name: props.name,
-      replicateTo: 'NONE'
+      deploymentDurationInMinutes:
+        typeof props.deploymentDurationInMinutes === 'undefined'
+          ? DEFAULT_DEPLOYMENT_DURATION_IN_MINUTES
+          : props.deploymentDurationInMinutes,
+      growthFactor: typeof props.growthFactor === 'undefined' ? DEFAULT_GROWTH_FACTOR : props.growthFactor,
+      replicateTo: props.replicateTo || DEFAULT_REPLICATION,
+      description: props.description,
+      finalBakeTimeInMinutes: props.finalBakeTimeInMinutes,
+      growthType: props.growthType
     });
 
     this.deploymentStrategyId = this.resource.ref;
   }
 
   public static fromId(scope: cdk.Construct, id: string, deploymentStrategyId: string) {
-    return new DeploymentStrategyPlaceholder(scope, id, deploymentStrategyId);
+    return new DeploymentStrategyImport(scope, id, deploymentStrategyId);
   }
 
   public static fromPredefined(
@@ -50,6 +83,10 @@ export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrat
     id: string,
     predefinedDeploymentStrategy: PredefinedDeploymentStrategy
   ) {
-    return new DeploymentStrategyPlaceholder(scope, id, predefinedDeploymentStrategy);
+    return new DeploymentStrategyImport(scope, id, predefinedDeploymentStrategy);
+  }
+
+  protected prepare() {
+    this.resource.tags = this.tags.renderTags();
   }
 }

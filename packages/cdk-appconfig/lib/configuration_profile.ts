@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as appconfig from '@aws-cdk/aws-appconfig';
+import * as s3 from '@aws-cdk/aws-s3';
 
 import { Application } from './application';
 import { Validator } from './validator';
@@ -8,7 +9,7 @@ export interface IConfigurationProfile extends cdk.IResource {
   readonly configurationProfileId: string;
 }
 
-export interface HostedConfigurationProfileProps {
+export interface ConfigurationProfileBaseProps {
   readonly application: Application;
   readonly name: string;
   readonly validators?: Validator[];
@@ -16,12 +17,16 @@ export interface HostedConfigurationProfileProps {
   readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
-export class HostedConfigurationProfile extends cdk.Resource implements IConfigurationProfile, cdk.ITaggable {
+export interface ConfigurationProfileProps extends ConfigurationProfileBaseProps {
+  readonly locationUri: string;
+}
+
+export abstract class ConfigurationProfile extends cdk.Resource implements IConfigurationProfile, cdk.ITaggable {
   public readonly configurationProfileId: string;
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnConfigurationProfile;
 
-  constructor(scope: cdk.Construct, id: string, props: HostedConfigurationProfileProps) {
+  constructor(scope: cdk.Construct, id: string, props: ConfigurationProfileProps) {
     super(scope, id, {
       physicalName: props.name
     });
@@ -36,7 +41,7 @@ export class HostedConfigurationProfile extends cdk.Resource implements IConfigu
       applicationId: props.application.applicationId,
       name: props.name,
       description: props.description,
-      locationUri: 'hosted',
+      locationUri: props.locationUri,
       validators: validatorConfigs
     });
 
@@ -47,5 +52,32 @@ export class HostedConfigurationProfile extends cdk.Resource implements IConfigu
 
   protected prepare() {
     this.resource.tags = this.tags.renderTags();
+  }
+}
+
+// TODO
+// export class SsmDocumentConfigurationProfile extends ConfigurationProfile {}
+
+// TODO
+// export class SsmParameterConfigurationProfile extends ConfigurationProfile {}
+
+export interface S3ConfigurationProfileProps extends ConfigurationProfileBaseProps {
+  readonly s3Bucket: s3.IBucket;
+  readonly s3ObjectKey: string;
+}
+
+export class S3ConfigurationProfile extends ConfigurationProfile {
+  constructor(scope: cdk.Construct, id: string, props: S3ConfigurationProfileProps) {
+    const locationUri = props.s3Bucket.s3UrlForObject(props.s3ObjectKey);
+    super(scope, id, { ...props, locationUri });
+  }
+}
+
+export type HostedConfigurationProfileProps = ConfigurationProfileBaseProps;
+
+export class HostedConfigurationProfile extends ConfigurationProfile {
+  constructor(scope: cdk.Construct, id: string, props: HostedConfigurationProfileProps) {
+    const locationUri = 'hosted';
+    super(scope, id, { ...props, locationUri });
   }
 }

@@ -12,18 +12,31 @@ export interface DeploymentProps {
   readonly configurationVersionNumber: string;
   readonly deploymentStrategy: IDeploymentStrategy;
   readonly environment: Environment;
+  readonly description?: string;
+  // TODO
+  // readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
 export class Deployment extends cdk.Resource {
+  public readonly tags: cdk.TagManager;
+  private readonly resource: appconfig.CfnDeployment;
+
   constructor(scope: cdk.Construct, id: string, props: DeploymentProps) {
     super(scope, id);
 
-    new appconfig.CfnDeployment(this, 'Resource', {
+    this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::Deployment');
+
+    this.resource = new appconfig.CfnDeployment(this, 'Resource', {
       applicationId: props.application.applicationId,
       environmentId: props.environment.environmentId,
       configurationProfileId: props.configurationProfile.configurationProfileId,
       configurationVersion: props.configurationVersionNumber,
-      deploymentStrategyId: props.deploymentStrategy.deploymentStrategyId
+      deploymentStrategyId: props.deploymentStrategy.deploymentStrategyId,
+      description: props.description
     });
+  }
+
+  protected prepare() {
+    this.resource.tags = this.tags.renderTags();
   }
 }
