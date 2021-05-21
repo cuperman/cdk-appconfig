@@ -21,7 +21,7 @@ export interface ConfigurationProfileProps extends ConfigurationProfileBaseProps
   readonly locationUri: string;
 }
 
-export abstract class ConfigurationProfile extends cdk.Resource implements IConfigurationProfile, cdk.ITaggable {
+export class ConfigurationProfile extends cdk.Resource implements IConfigurationProfile, cdk.ITaggable {
   public readonly configurationProfileId: string;
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnConfigurationProfile;
