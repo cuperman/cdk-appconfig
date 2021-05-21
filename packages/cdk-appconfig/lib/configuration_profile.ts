@@ -8,7 +8,7 @@ export interface IConfigurationProfile extends cdk.IResource {
   readonly configurationProfileId: string;
 }
 
-export interface ConfigurationProfileProps {
+export interface HostedConfigurationProfileProps {
   readonly application: Application;
   readonly name: string;
   readonly validators?: Validator[];
@@ -21,7 +21,7 @@ export class HostedConfigurationProfile extends cdk.Resource implements IConfigu
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnConfigurationProfile;
 
-  constructor(scope: cdk.Construct, id: string, props: ConfigurationProfileProps) {
+  constructor(scope: cdk.Construct, id: string, props: HostedConfigurationProfileProps) {
     super(scope, id, {
       physicalName: props.name
     });
