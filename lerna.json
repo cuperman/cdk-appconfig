@@ -6,7 +6,5 @@
       "registry": "https://npm.pkg.github.com"
     }
   },
-  "packages": [
-    "packages/*"
-  ]
+  "packages": ["packages/*"]
 }
