@@ -634,10 +634,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@cuperman/cdk-appconfig-handler-hosted-configuration-version@0.4.1":
-  version "0.4.1"
-  resolved "https://npm.pkg.github.com/download/@cuperman/cdk-appconfig-handler-hosted-configuration-version/0.4.1/d96a6f01bf221e20b1fbbb9e35e3f1cf56c1fa352b393241d41418675346b43b#2fd36d7cce03282498af350735ec64e4b5fb3215"
-  integrity sha512-/SVkqJDnFYv2ia+a5dIgBQP22Xu4jUPXQ642sdZSG1uug/mPFOwlWzwVjkhsARguhYFBnxvSPJpNBAX1Xomjrg==
+"@cuperman/cdk-appconfig-handler-hosted-configuration-version@^0.4.2":
+  version "0.4.2"
+  resolved "https://npm.pkg.github.com/download/@cuperman/cdk-appconfig-handler-hosted-configuration-version/0.4.2/5faa825ff6a14dcd763ff901e313ea0d986e5b467ee38c3b4c9b8e3c5b20b205#a3fb882e42b38ba9d9b51d09d09f217c358120ef"
+  integrity sha512-jcWQAoMuR8Lgh3/PoSQoQ7KcLABjeEGUErP6eE+b2B5C3/2YneFB0lJZrPmHrnhpLsBSizJjWyV/lmrXW/v4Zg==
   dependencies:
     aws-sdk "^2.903.0"
 
