@@ -633,17 +633,17 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@cuperman/cdk-appconfig-handler-hosted-configuration-version@^0.4.2":
-  version "0.4.2"
-  resolved "https://npm.pkg.github.com/download/@cuperman/cdk-appconfig-handler-hosted-configuration-version/0.4.2/5faa825ff6a14dcd763ff901e313ea0d986e5b467ee38c3b4c9b8e3c5b20b205#a3fb882e42b38ba9d9b51d09d09f217c358120ef"
-  integrity sha512-jcWQAoMuR8Lgh3/PoSQoQ7KcLABjeEGUErP6eE+b2B5C3/2YneFB0lJZrPmHrnhpLsBSizJjWyV/lmrXW/v4Zg==
+"@cuperman/cdk-appconfig-handler-hosted-configuration-version@^0.4.3":
+  version "0.4.3"
+  resolved "https://npm.pkg.github.com/download/@cuperman/cdk-appconfig-handler-hosted-configuration-version/0.4.3/48615225231541ecfe12a5937fadc1fffe10970e303630299b62e80b056be2c9#ab5d620f8ad79c04045c78a7da9df675e6205e06"
+  integrity sha512-KdzwnYGUCb04sQFycOm59mijWD5D3PPkSKA5oikLGNJ1eJ/6FATagCbRFd2pHys+KFLgnWG3sgt6m54fDaixoA==
   dependencies:
     aws-sdk "^2.903.0"
 
-"@cuperman/cdk-appconfig@^0.4.2":
-  version "0.4.2"
-  resolved "https://npm.pkg.github.com/download/@cuperman/cdk-appconfig/0.4.2/47958f559ef84cc69558839b97468a9bd363727cacb5e9f3812024df9420df06#431ab4894f24ea87a1ecd410d21d0bf75c4cf591"
-  integrity sha512-CYpcpRbPcQBcFQr/Nzn0PmL+XGpa0RUcPwNOtPwD6P8NtG237rfpU3LZgOgpVQ12pk8q4duzpPVK1cPX67vCSA==
+"@cuperman/cdk-appconfig@^0.4.3":
+  version "0.4.3"
+  resolved "https://npm.pkg.github.com/download/@cuperman/cdk-appconfig/0.4.3/54cede30234b34cff4018098302e43906bff8f8847bc590246e8346a5acfd636#45acdf007b70534cdbd77f7b488be6a615ae8e7c"
+  integrity sha512-u8iKPDPg82Tp0KWy+lexLPhcKaUdpSATN6882jh1SV1rQ0m8focYcWtZpiFFlW45MWl18Q4eHaVV7tNgjl0Kgw==
   dependencies:
     "@aws-cdk/aws-appconfig" "^1.0.0"
     "@aws-cdk/aws-iam" "^1.0.0"
@@ -652,7 +652,7 @@
     "@aws-cdk/aws-s3-assets" "^1.0.0"
     "@aws-cdk/core" "^1.0.0"
     "@aws-cdk/custom-resources" "^1.0.0"
-    "@cuperman/cdk-appconfig-handler-hosted-configuration-version" "^0.4.2"
+    "@cuperman/cdk-appconfig-handler-hosted-configuration-version" "^0.4.3"
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
