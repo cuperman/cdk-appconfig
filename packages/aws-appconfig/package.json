@@ -1,0 +1,69 @@
+{
+  "name": "@cuperman/cdk-appconfig",
+  "description": "High-level CDK Constructs for AWS AppConfig",
+  "license": "MIT",
+  "version": "0.4.0",
+  "stability": "stable",
+  "author": {
+    "name": "Jeff Cooper",
+    "email": "jeff@cuperman.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cuperman/cdk-appconfig",
+    "path": "packages/aws-appconfig"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "build": "jsii",
+    "watch": "jsii --watch",
+    "package": "jsii-pacmak",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "^1.0.0",
+    "@types/jest": "^26.0.10",
+    "@types/node": "10.17.27",
+    "aws-cdk": "^1.0.0",
+    "jest": "^26.4.2",
+    "jsii": "^1.27.0",
+    "jsii-pacmak": "^1.27.0",
+    "ts-jest": "^26.2.0",
+    "typescript": "~3.9.7"
+  },
+  "peerDependencies": {
+    "@aws-cdk/assets": "^1.0.0",
+    "@aws-cdk/aws-appconfig": "^1.0.0",
+    "@aws-cdk/aws-iam": "^1.0.0",
+    "@aws-cdk/aws-lambda": "^1.0.0",
+    "@aws-cdk/aws-s3": "^1.0.0",
+    "@aws-cdk/aws-s3-assets": "^1.0.0",
+    "@aws-cdk/core": "^1.0.0",
+    "@aws-cdk/custom-resources": "^1.0.0",
+    "constructs": "^3.0.0"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-appconfig": "^1.0.0",
+    "@aws-cdk/aws-iam": "^1.0.0",
+    "@aws-cdk/aws-lambda": "^1.0.0",
+    "@aws-cdk/aws-s3": "^1.0.0",
+    "@aws-cdk/aws-s3-assets": "^1.0.0",
+    "@aws-cdk/core": "^1.0.0",
+    "@aws-cdk/custom-resources": "^1.0.0"
+  },
+  "jsii": {
+    "outdir": "dist",
+    "versionFormat": "full",
+    "targets": {
+      "python": {
+        "distName": "cdk-appconfig",
+        "module": "cdk_appconfig"
+      }
+    }
+  }
+}

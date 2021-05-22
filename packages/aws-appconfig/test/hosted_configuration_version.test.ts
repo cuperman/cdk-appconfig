@@ -5,7 +5,7 @@ import * as cdk from '@aws-cdk/core';
 import * as s3 from '@aws-cdk/aws-s3';
 
 import { buildCdkStack, buildApplication, buildHostedProfile } from './helpers';
-import * as appconfig from '../../lib/appconfig';
+import * as appconfig from '../lib';
 
 describe('AppConfig', () => {
   describe('HostedConfigurationVersion', () => {
@@ -149,7 +149,7 @@ describe('AppConfig', () => {
         application,
         configurationProfile: profile,
         contentType: appconfig.ContentType.YAML,
-        content: appconfig.Content.fromAsset(path.join(__dirname, '../__fixtures__/config.yml'))
+        content: appconfig.Content.fromAsset(path.join(__dirname, '__fixtures__/config.yml'))
       });
 
       it('has a content config with s3 location attributes', () => {

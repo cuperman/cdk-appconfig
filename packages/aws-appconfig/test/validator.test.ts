@@ -7,7 +7,7 @@ import {
   LambdaValidator,
   Application,
   HostedConfigurationProfile
-} from '../../lib/appconfig';
+} from '../lib';
 import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
 
 describe('AppConfig', () => {

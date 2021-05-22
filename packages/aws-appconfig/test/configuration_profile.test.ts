@@ -3,7 +3,7 @@ import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 
 import { buildCdkStack, buildApplication } from './helpers';
-import { HostedConfigurationProfile, JsonSchemaValidator, LambdaValidator } from '../../lib/appconfig';
+import { HostedConfigurationProfile, JsonSchemaValidator, LambdaValidator } from '../lib';
 
 describe('AppConfig', () => {
   describe('HostedConfigurationProfile', () => {
