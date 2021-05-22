@@ -20,7 +20,7 @@
   },
   "scripts": {
     "clean": "rm -rf ./dist",
-    "build": "tsc",
+    "build": "tsc && cp -r config dist",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
