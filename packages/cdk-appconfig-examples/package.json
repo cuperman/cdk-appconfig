@@ -2,7 +2,7 @@
   "name": "@cuperman/cdk-appconfig-examples",
   "description": "CDK examples for using AppConfig constructs",
   "license": "MIT",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": {
     "name": "Jeff Cooper",
     "email": "jeff@cuperman.net"
@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@aws-cdk/core": "1.105.0",
-    "@cuperman/cdk-appconfig": "^0.4.1",
+    "@cuperman/cdk-appconfig": "^0.4.2",
     "source-map-support": "^0.5.16"
   }
 }
