@@ -1,6 +1,6 @@
 import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
-import * as appconfig from '../../lib/appconfig';
+import * as appconfig from '../lib';
 
 describe('AppConfig', () => {
   describe('DeploymentStrategy', () => {

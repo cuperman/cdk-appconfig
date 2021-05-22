@@ -6,7 +6,7 @@ export interface IDeploymentStrategy extends cdk.IResource {
 }
 
 export class DeploymentStrategyImport extends cdk.Resource implements IDeploymentStrategy {
-  public deploymentStrategyId: string;
+  public readonly deploymentStrategyId: string;
 
   constructor(scope: cdk.Construct, id: string, deploymentStrategyId: string) {
     super(scope, id);
