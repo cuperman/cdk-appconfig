@@ -2,7 +2,7 @@
   "name": "@cuperman/cdk-appconfig",
   "description": "High-level CDK Constructs for AWS AppConfig",
   "license": "MIT",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "author": {
     "name": "Jeff Cooper",
     "email": "jeff@cuperman.net"
@@ -46,7 +46,7 @@
     "@aws-cdk/aws-s3-assets": "^1.0.0",
     "@aws-cdk/core": "^1.0.0",
     "@aws-cdk/custom-resources": "^1.0.0",
-    "@cuperman/cdk-appconfig-handler-hosted-configuration-version": "^0.4.2"
+    "@cuperman/cdk-appconfig-handler-hosted-configuration-version": "^0.4.3"
   },
   "peerDependencies": {
     "@aws-cdk/assets": "^1.0.0",
