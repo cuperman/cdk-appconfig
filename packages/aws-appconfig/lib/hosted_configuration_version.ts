@@ -43,7 +43,7 @@ export class HostedConfigurationVersion extends cdk.Resource {
 
     const onEventHandler = new lambda.SingletonFunction(this, 'OnEventHandler', {
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: lambda.Code.fromAsset(path.join(__dirname, '../../asset')),
+      code: lambda.Code.fromAsset(path.join(__dirname, '../../aws-appconfig-hosted-configuration-version-handler')),
       handler: 'index.onEvent',
       uuid: 'c67842de-c9ed-4cbb-906f-3b490af456b8'
     });

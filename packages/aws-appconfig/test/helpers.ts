@@ -1,5 +1,5 @@
 import * as cdk from '@aws-cdk/core';
-import * as appconfig from '../../lib/appconfig';
+import * as appconfig from '../lib';
 
 interface Tags {
   [key: string]: string;

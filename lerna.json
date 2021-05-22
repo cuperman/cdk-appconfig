@@ -1,0 +1,10 @@
+{
+  "version": "0.1.0",
+  "npmClient": "yarn",
+  "command": {
+    "publish": {
+      "registry": "https://npm.pkg.github.com"
+    }
+  },
+  "packages": ["packages/*"]
+}

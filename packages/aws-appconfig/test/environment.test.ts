@@ -2,7 +2,7 @@ import { expect as expectCDK, haveResource, anything, ResourcePart } from '@aws-
 import * as cdk from '@aws-cdk/core';
 
 import { buildCdkStack, buildApplication } from './helpers';
-import { Environment } from '../../lib/appconfig';
+import { Environment } from '../lib';
 
 describe('AppConfig', () => {
   describe('Environment', () => {

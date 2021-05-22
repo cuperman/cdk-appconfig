@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as cdk from '@aws-cdk/core';
 import * as s3 from '@aws-cdk/aws-s3';
 
-import { AssetContent, BucketContent, Content, InlineContent } from '../../lib/appconfig';
+import { AssetContent, BucketContent, Content, InlineContent } from '../lib';
 
 describe('AppConfig', () => {
   const app = new cdk.App();
@@ -49,7 +49,7 @@ describe('AppConfig', () => {
     });
 
     describe('fromAsset', () => {
-      const assetContent = Content.fromAsset(path.join(__dirname, '../__fixtures__/config.yml'));
+      const assetContent = Content.fromAsset(path.join(__dirname, '__fixtures__/config.yml'));
 
       it('returns an InlineContent object', () => {
         expect(assetContent).toBeInstanceOf(AssetContent);

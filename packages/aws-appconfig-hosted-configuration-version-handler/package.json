@@ -1,0 +1,28 @@
+{
+  "name": "@cuperman/cdk-appconfig-hosted-configuration-version-handler",
+  "version": "0.4.0",
+  "description": "Custom resource handler for AppConfig hosted configuration versions",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": {
+    "name": "Jeff Cooper",
+    "email": "jeff@cuperman.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cuperman/cdk-appconfig",
+    "path": "packages/aws-appconfig-hosted-configuration-version-handler"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.903.0"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}

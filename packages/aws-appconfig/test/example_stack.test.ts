@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as cdk from '@aws-cdk/core';
 import { expect as expectCDK, haveResource, anything } from '@aws-cdk/assert';
 
-import * as appconfig from '../lib/appconfig';
+import * as appconfig from '../lib';
 
 class ExampleStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -27,7 +27,7 @@ class ExampleStack extends cdk.Stack {
       application,
       configurationProfile,
       contentType: appconfig.ContentType.YAML,
-      content: appconfig.Content.fromAsset(path.join(__dirname, './__fixtures__/config.yml'))
+      content: appconfig.Content.fromAsset(path.join(__dirname, '__fixtures__/config.yml'))
     });
   }
 }
