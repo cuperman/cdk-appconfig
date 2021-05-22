@@ -7,7 +7,7 @@ cdk.out
 
 
 # Exclude jsii outdir
-dist
+pkg
 
 # Include .jsii
 !.jsii

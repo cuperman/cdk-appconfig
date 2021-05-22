@@ -16,13 +16,15 @@
     "registry": "https://npm.pkg.github.com"
   },
   "bin": {
-    "cdk-examples": "bin/cdk-examples.js"
+    "cdk-examples": "dist/bin/cdk-examples.js"
   },
   "scripts": {
+    "clean": "rm -rf ./dist",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "ts-node": "ts-node"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.105.0",

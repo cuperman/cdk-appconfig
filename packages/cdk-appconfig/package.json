@@ -15,8 +15,8 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "jsii",
@@ -61,7 +61,10 @@
   ],
   "stability": "experimental",
   "jsii": {
-    "outdir": "dist",
+    "tsc": {
+      "outDir": "dist"
+    },
+    "outdir": "pkg",
     "versionFormat": "full",
     "targets": {
       "python": {

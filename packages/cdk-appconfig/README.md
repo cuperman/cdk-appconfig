@@ -168,5 +168,5 @@ yarn test
 yarn package
 
 # publish the package to Github Packages
-npm publish ./dist/js/cdk-appconfig@X.X.X.jsii.tgz
+npm publish ./pkg/js/cdk-appconfig@X.X.X.jsii.tgz
 ```
