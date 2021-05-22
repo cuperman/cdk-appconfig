@@ -9,5 +9,5 @@ Useful commands:
 ```bash
 yarn
 yarn lerna bootstrap
-yarn lerna publish
+yarn lerna publish [bump]
 ```
