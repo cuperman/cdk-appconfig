@@ -2,8 +2,7 @@
   "name": "@cuperman/cdk-appconfig",
   "description": "High-level CDK Constructs for AWS AppConfig",
   "license": "MIT",
-  "version": "0.4.0",
-  "stability": "stable",
+  "version": "0.4.1",
   "author": {
     "name": "Jeff Cooper",
     "email": "jeff@cuperman.net"
@@ -11,7 +10,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/cuperman/cdk-appconfig",
-    "path": "packages/aws-appconfig"
+    "path": "packages/cdk-appconfig"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -36,6 +35,16 @@
     "ts-jest": "^26.2.0",
     "typescript": "~3.9.7"
   },
+  "dependencies": {
+    "@aws-cdk/aws-appconfig": "^1.0.0",
+    "@aws-cdk/aws-iam": "^1.0.0",
+    "@aws-cdk/aws-lambda": "^1.0.0",
+    "@aws-cdk/aws-s3": "^1.0.0",
+    "@aws-cdk/aws-s3-assets": "^1.0.0",
+    "@aws-cdk/core": "^1.0.0",
+    "@aws-cdk/custom-resources": "^1.0.0",
+    "@cuperman/cdk-appconfig-handler-hosted-configuration-version": "0.4.1"
+  },
   "peerDependencies": {
     "@aws-cdk/assets": "^1.0.0",
     "@aws-cdk/aws-appconfig": "^1.0.0",
@@ -47,15 +56,10 @@
     "@aws-cdk/custom-resources": "^1.0.0",
     "constructs": "^3.0.0"
   },
-  "dependencies": {
-    "@aws-cdk/aws-appconfig": "^1.0.0",
-    "@aws-cdk/aws-iam": "^1.0.0",
-    "@aws-cdk/aws-lambda": "^1.0.0",
-    "@aws-cdk/aws-s3": "^1.0.0",
-    "@aws-cdk/aws-s3-assets": "^1.0.0",
-    "@aws-cdk/core": "^1.0.0",
-    "@aws-cdk/custom-resources": "^1.0.0"
-  },
+  "bundledDependencies": [
+    "@cuperman/cdk-appconfig-handler-hosted-configuration-version"
+  ],
+  "stability": "experimental",
   "jsii": {
     "outdir": "dist",
     "versionFormat": "full",

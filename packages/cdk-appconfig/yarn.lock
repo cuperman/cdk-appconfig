@@ -634,6 +634,13 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@cuperman/cdk-appconfig-handler-hosted-configuration-version@0.4.1":
+  version "0.4.1"
+  resolved "https://npm.pkg.github.com/download/@cuperman/cdk-appconfig-handler-hosted-configuration-version/0.4.1/d96a6f01bf221e20b1fbbb9e35e3f1cf56c1fa352b393241d41418675346b43b#2fd36d7cce03282498af350735ec64e4b5fb3215"
+  integrity sha512-/SVkqJDnFYv2ia+a5dIgBQP22Xu4jUPXQ642sdZSG1uug/mPFOwlWzwVjkhsARguhYFBnxvSPJpNBAX1Xomjrg==
+  dependencies:
+    aws-sdk "^2.903.0"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -1203,6 +1210,21 @@ aws-sdk@^2.848.0:
   version "2.903.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.903.0.tgz#4c8252723370ebbdaffe69f4dfddc5973b1dab4a"
   integrity sha512-BP/giYLP8QJ63Jta59kph1F76oPITxRt/wNr3BdoEs9BtshWlGKk149UaseDB4wJtI+0TER5jtzBIUBcP6E+wA==
+  dependencies:
+    buffer "4.9.2"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
+aws-sdk@^2.903.0:
+  version "2.912.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.912.0.tgz#3f096b057ccc7b22ca234b44167be5c02a1daab3"
+  integrity sha512-ImeMEC014AB9DMlS3X25G+y1Q/jGDwh7kOY+5AE0PBOMjDrQOYjfiqVYbFU2nZx57Uk7UVFclOb3Lty3hEz2gg==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
