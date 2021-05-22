@@ -9,6 +9,10 @@ import { Application } from './application';
 import { IConfigurationProfile } from './configuration_profile';
 import { ContentType, Content } from './content';
 
+const HANDLER_CODE_PATH = path.dirname(
+  require.resolve('@cuperman/cdk-appconfig-handler-hosted-configuration-version/package.json')
+);
+
 function uppercaseProperties(props: { [key: string]: any }): { [key: string]: any } {
   if (typeof props !== 'object') {
     return props;
@@ -43,7 +47,7 @@ export class HostedConfigurationVersion extends cdk.Resource {
 
     const onEventHandler = new lambda.SingletonFunction(this, 'OnEventHandler', {
       runtime: lambda.Runtime.NODEJS_14_X,
-      code: lambda.Code.fromAsset(path.join(__dirname, '../../aws-appconfig-hosted-configuration-version-handler')),
+      code: lambda.Code.fromAsset(HANDLER_CODE_PATH),
       handler: 'index.onEvent',
       uuid: 'c67842de-c9ed-4cbb-906f-3b490af456b8'
     });

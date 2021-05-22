@@ -633,10 +633,17 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@cuperman/cdk-appconfig@^0.4.0":
-  version "0.4.0"
-  resolved "https://npm.pkg.github.com/download/@cuperman/cdk-appconfig/0.4.0/eecf1c95b4f9094de25ce369b3080473f33228040f2e8250379325dd7c93f0a7#f400bcd8a862a4527e512af269bacfc7360a1f64"
-  integrity sha512-xmONwLr/Pnv5FfvOxm5mp0tUR17w3s91DP1Y6Re5ymSyrOWTjFloUon9zgfXtpoqylzk8GCGmiRQLaW4+76QNQ==
+"@cuperman/cdk-appconfig-handler-hosted-configuration-version@0.4.1":
+  version "0.4.1"
+  resolved "https://npm.pkg.github.com/download/@cuperman/cdk-appconfig-handler-hosted-configuration-version/0.4.1/d96a6f01bf221e20b1fbbb9e35e3f1cf56c1fa352b393241d41418675346b43b#2fd36d7cce03282498af350735ec64e4b5fb3215"
+  integrity sha512-/SVkqJDnFYv2ia+a5dIgBQP22Xu4jUPXQ642sdZSG1uug/mPFOwlWzwVjkhsARguhYFBnxvSPJpNBAX1Xomjrg==
+  dependencies:
+    aws-sdk "^2.903.0"
+
+"@cuperman/cdk-appconfig@^0.4.1":
+  version "0.4.1"
+  resolved "https://npm.pkg.github.com/download/@cuperman/cdk-appconfig/0.4.1/2eba995ec92a6a02058eded97037bd46c82e5457909558c6a8d33444893ad1af#8cab564fac9674d7b54ba411a795de43eb449058"
+  integrity sha512-hZCS44Rzcd0fchQjlNACD6tWm/QBMo+yBdE80zmARLf9UUgwZyB+vLB0U/Ai4RiaV5Gw+AKnUlgIr9/Yw/4DnQ==
   dependencies:
     "@aws-cdk/aws-appconfig" "^1.0.0"
     "@aws-cdk/aws-iam" "^1.0.0"
@@ -645,6 +652,7 @@
     "@aws-cdk/aws-s3-assets" "^1.0.0"
     "@aws-cdk/core" "^1.0.0"
     "@aws-cdk/custom-resources" "^1.0.0"
+    "@cuperman/cdk-appconfig-handler-hosted-configuration-version" "0.4.1"
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -1201,6 +1209,21 @@ aws-sdk@^2.848.0:
   version "2.907.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.907.0.tgz#c1baddf9fe0dc8826356be14534424ffbd5f9c3f"
   integrity sha512-P1gth8sVqXCIjKN78kyD3OosEzqUSYxDG04Cpp2wVGx/djsd5OSv4NkayOhKZ5OMXwk6IdA82oXV/HQR8EjbwQ==
+  dependencies:
+    buffer "4.9.2"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
+aws-sdk@^2.903.0:
+  version "2.912.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.912.0.tgz#3f096b057ccc7b22ca234b44167be5c02a1daab3"
+  integrity sha512-ImeMEC014AB9DMlS3X25G+y1Q/jGDwh7kOY+5AE0PBOMjDrQOYjfiqVYbFU2nZx57Uk7UVFclOb3Lty3hEz2gg==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
