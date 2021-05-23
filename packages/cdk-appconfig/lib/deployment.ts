@@ -13,8 +13,6 @@ export interface DeploymentProps {
   readonly deploymentStrategy: IDeploymentStrategy;
   readonly environment: Environment;
   readonly description?: string;
-  // TODO
-  // readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
 export class Deployment extends cdk.Resource {

@@ -38,8 +38,7 @@ export interface DeploymentStrategyProps {
   readonly description?: string;
   readonly finalBakeTimeInMinutes?: number;
   readonly growthType?: DeploymentStrategyGrowthType;
-  // TODO
-  // readonly removalPolicy?: cdk.RemovalPolicy;
+  readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
 export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrategy {
@@ -53,6 +52,7 @@ export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrat
     });
 
     const DEFAULT_REPLICATION = DeploymentStrategyReplication.NONE;
+    const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.DESTROY;
 
     this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::DeploymentStrategy');
 
@@ -65,6 +65,8 @@ export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrat
       finalBakeTimeInMinutes: props.finalBakeTimeInMinutes,
       growthType: props.growthType
     });
+
+    this.resource.applyRemovalPolicy(props.removalPolicy || DEFAULT_REMOVAL_POLICY);
 
     this.deploymentStrategyId = this.resource.ref;
   }

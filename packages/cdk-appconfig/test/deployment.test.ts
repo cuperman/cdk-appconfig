@@ -1,43 +1,100 @@
-import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
-import * as cdk from '@aws-cdk/core';
+import { anything, expect as expectCDK, haveResource } from '@aws-cdk/assert';
+import {
+  buildCdkStack,
+  buildApplication,
+  buildHostedProfile,
+  buildEnvironment,
+  buildDeploymentStrategy
+} from './helpers';
 import * as appconfig from '../lib';
 
 describe('AppConfig', () => {
   describe('Deployment', () => {
     describe('with required props', () => {
-      const app = new cdk.App();
-      const stack = new cdk.Stack(app, 'MyStack');
-
-      const application = new appconfig.Application(stack, 'MyApplication', {
-        name: 'My Application'
-      });
-
-      const environment = new appconfig.Environment(stack, 'MyEnvironment', {
-        application,
-        name: 'My Environment'
-      });
-
-      const configurationProfile = new appconfig.HostedConfigurationProfile(stack, 'MyConfigurationProfile', {
-        application,
-        name: 'My Configuration Profile'
-      });
-
-      const deploymentStrategy = new appconfig.DeploymentStrategy(stack, 'MyDeploymentStrategy', {
-        name: 'My Deployment Strategy',
-        deploymentDurationInMinutes: 0,
-        growthFactor: 100
-      });
+      const stack = buildCdkStack();
+      const application = buildApplication(stack);
+      const configurationProfile = buildHostedProfile(stack, { application });
+      const environment = buildEnvironment(stack, { application });
+      const deploymentStrategy = buildDeploymentStrategy(stack);
 
       new appconfig.Deployment(stack, 'MyDeployment', {
         application,
-        environment,
         configurationProfile,
         configurationVersionNumber: '1',
+        environment,
         deploymentStrategy
       });
 
-      it('does something', () => {
-        expectCDK(stack).to(haveResource('AWS::AppConfig::Deployment'));
+      it('creates a deployment with required properties', () => {
+        expectCDK(stack).to(
+          haveResource('AWS::AppConfig::Deployment', {
+            ApplicationId: {
+              Ref: anything()
+            },
+            ConfigurationProfileId: {
+              Ref: anything()
+            },
+            ConfigurationVersion: '1',
+            EnvironmentId: {
+              Ref: anything()
+            },
+            DeploymentStrategyId: {
+              Ref: anything()
+            }
+          })
+        );
+      });
+    });
+
+    describe('with optional props', () => {
+      const stack = buildCdkStack();
+      const application = buildApplication(stack);
+      const configurationProfile = buildHostedProfile(stack, { application });
+      const environment = buildEnvironment(stack, { application });
+      const deploymentStrategy = buildDeploymentStrategy(stack);
+
+      new appconfig.Deployment(stack, 'MyDeployment', {
+        application,
+        configurationProfile,
+        configurationVersionNumber: '1',
+        environment,
+        deploymentStrategy,
+        description: 'My first deployment'
+      });
+
+      it('creates a deployment with optional properties', () => {
+        expectCDK(stack).to(
+          haveResource('AWS::AppConfig::Deployment', {
+            Description: 'My first deployment'
+          })
+        );
+      });
+    });
+
+    describe('with tags', () => {
+      const stack = buildCdkStack({ tags: { Foo: 'Bar', Kanye: 'West' } });
+      const application = buildApplication(stack);
+      const configurationProfile = buildHostedProfile(stack, { application });
+      const environment = buildEnvironment(stack, { application });
+      const deploymentStrategy = buildDeploymentStrategy(stack);
+
+      new appconfig.Deployment(stack, 'MyDeployment', {
+        application,
+        configurationProfile,
+        configurationVersionNumber: '1',
+        environment,
+        deploymentStrategy
+      });
+
+      it('applies tags', () => {
+        expectCDK(stack).to(
+          haveResource('AWS::AppConfig::Deployment', {
+            Tags: [
+              { Key: 'Foo', Value: 'Bar' },
+              { Key: 'Kanye', Value: 'West' }
+            ]
+          })
+        );
       });
     });
   });

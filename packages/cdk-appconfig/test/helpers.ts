@@ -37,3 +37,24 @@ export function buildHostedProfile(
     name: options?.name || 'MyHostedConfigurationProfile'
   });
 }
+
+export function buildEnvironment(
+  scope: cdk.Construct,
+  options?: { application?: appconfig.Application; name?: string }
+) {
+  return new appconfig.Environment(scope, 'MyEnvironment', {
+    application: options?.application || buildApplication(scope),
+    name: options?.name || 'MyEnvironment'
+  });
+}
+
+export function buildDeploymentStrategy(
+  scope: cdk.Construct,
+  options?: { name?: string; deploymentDurationInMinutes?: number; growthFactor?: number }
+) {
+  return new appconfig.DeploymentStrategy(scope, 'MyDeploymentStrategy', {
+    name: options?.name || 'MyDeploymentStrategy',
+    deploymentDurationInMinutes: options?.deploymentDurationInMinutes || 0,
+    growthFactor: options?.growthFactor || 0
+  });
+}
