@@ -9,7 +9,9 @@ describe('AppConfig', () => {
       const stack = new cdk.Stack(app, 'MyStack');
 
       new appconfig.DeploymentStrategy(stack, 'MyDeploymentStrategy', {
-        name: 'My Deployment Strategy'
+        name: 'My Deployment Strategy',
+        deploymentDurationInMinutes: 0,
+        growthFactor: 100
       });
 
       it('does something', () => {

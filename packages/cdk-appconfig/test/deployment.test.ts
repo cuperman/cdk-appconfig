@@ -23,7 +23,9 @@ describe('AppConfig', () => {
       });
 
       const deploymentStrategy = new appconfig.DeploymentStrategy(stack, 'MyDeploymentStrategy', {
-        name: 'My Deployment Strategy'
+        name: 'My Deployment Strategy',
+        deploymentDurationInMinutes: 0,
+        growthFactor: 100
       });
 
       new appconfig.Deployment(stack, 'MyDeployment', {

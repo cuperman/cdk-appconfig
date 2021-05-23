@@ -32,8 +32,8 @@ export enum DeploymentStrategyGrowthType {
 
 export interface DeploymentStrategyProps {
   readonly name: string;
-  readonly deploymentDurationInMinutes?: number;
-  readonly growthFactor?: number;
+  readonly deploymentDurationInMinutes: number;
+  readonly growthFactor: number;
   readonly replicateTo?: DeploymentStrategyReplication;
   readonly description?: string;
   readonly finalBakeTimeInMinutes?: number;
@@ -52,19 +52,14 @@ export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrat
       physicalName: props.name
     });
 
-    const DEFAULT_DEPLOYMENT_DURATION_IN_MINUTES = 0;
-    const DEFAULT_GROWTH_FACTOR = 100;
     const DEFAULT_REPLICATION = DeploymentStrategyReplication.NONE;
 
     this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::DeploymentStrategy');
 
     this.resource = new appconfig.CfnDeploymentStrategy(this, 'Resource', {
       name: props.name,
-      deploymentDurationInMinutes:
-        typeof props.deploymentDurationInMinutes === 'undefined'
-          ? DEFAULT_DEPLOYMENT_DURATION_IN_MINUTES
-          : props.deploymentDurationInMinutes,
-      growthFactor: typeof props.growthFactor === 'undefined' ? DEFAULT_GROWTH_FACTOR : props.growthFactor,
+      deploymentDurationInMinutes: props.deploymentDurationInMinutes,
+      growthFactor: props.growthFactor,
       replicateTo: props.replicateTo || DEFAULT_REPLICATION,
       description: props.description,
       finalBakeTimeInMinutes: props.finalBakeTimeInMinutes,
