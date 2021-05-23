@@ -2,83 +2,74 @@
 
 High-level CDK constructs for AWS AppConfig
 
-## Example
+## Overview
+
+### Configuration Locations
+
+- `new appconfig.SsmDocumentConfigurationProfile(scope, id, props)` _coming soon_
+- `new appconfig.SsmParameterConfigurationProfile(scope, id, props)` _coming soon_
+- `new appconfig.S3ConfigurationProfile(scope, id, props)`
+- `new appconfig.HostedConfigurationProfile(scope, id, props)`
 
 ```ts
-import * as path from 'path';
-import * as cdk from '@aws-cdk/core';
+import * as s3 from '@aws-sdk/aws-s3';
 import * as appconfig from '@cuperman/cdk-appconfig';
 
-class MyConfigStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+const configBucket = new s3.Bucket(this, 'ConfigBucket');
 
-    const app = new appconfig.Application(this, 'App', {
-      name: 'My Application'
-    });
+const app = new appconfig.Application(this, 'App', {
+  name: 'My Application'
+});
 
-    const env = new appconfig.Environment(this, 'ProdEnv', {
-      application: app,
-      name: 'Production'
-    });
-
-    const config = new appconfig.HostedConfigurationProfile(this, 'Config', {
-      application: app,
-      name: 'My Config'
-    });
-
-    new appconfig.HostedConfigurationVersion(this, 'ConfigContent', {
-      application: app,
-      configurationProfile: config,
-      contentType: appconfig.ContentType.YAML,
-      content: appconfig.Content.fromAsset(path.join(__dirname, 'config.yml'))
-    });
-  }
-}
-```
-
-### Content
-
-You can create inline config content:
-
-```ts
-new appconfig.HostedConfigurationVersion(this, 'InlineContent', {
+const configProfile = new appconfig.S3ConfigurationProfile(this, 'ConfigProfile', {
   application: app,
-  configurationProfile: config,
-  contentType: appconfig.ContentType.TEXT,
-  content: appconfig.Content.fromInline('Hello, World')
+  name: 'My Configuration Profile',
+  s3Bucket: configBucket,
+  s3ObjectKey: 'path/to/config.json'
 });
 ```
 
-Or upload a local configuration file as an asset:
+### Hosted Configurations
+
+Content type:
+
+- `appconfig.ContentType.TEXT`
+- `appconfig.ContentType.JSON`
+- `appconfig.ContentType.YAML`
+
+Content:
+
+- `appconfig.Content.fromInline(content)`
+- `appconfig.Content.fromAsset(path)`
+- `appconfig.Content.fromBucket(bucket, key[, objectVersion])`
 
 ```ts
-new appconfig.HostedConfigurationVersion(this, 'AssetContent', {
+import * as appconfig from '@cuperman/cdk-appconfig';
+
+const app = new appconfig.Application(this, 'App', {
+  name: 'My Application'
+});
+
+const configProfile = new appconfig.HostedConfigurationProfile(this, 'ConfigProfile', {
   application: app,
-  configurationProfile: config,
-  contentType: appconfig.ContentType.JSON,
+  name: 'My Configuration Profile'
+});
+
+new appconfig.HostedConfigurationVersion(this, 'ConfigVersion', {
+  application: app,
+  configurationProfile: configProfile,
+  contentType: appconfig.ContentType.YAML,
   content: appconfig.Content.fromAsset(path.join(__dirname, 'config.yml'))
 });
 ```
 
-Or import a configuration from an s3 bucket:
+### Validating Configurations
 
-```ts
-const configBucket = s3.Bucket.fromName('my-config-bucket');
+JSON schema validators:
 
-new appconfig.HostedConfigurationVersion(this, 'InlineContent', {
-  application: app,
-  configurationProfile: config,
-  contentType: appconfig.ContentType.JSON,
-  content: appconfig.Content.fromBucket(configBucket, 'config.json')
-});
-```
-
-### Validation
-
-You can use [JSON schema](https://json-schema.org/) or a custom lambda function as a validator for your configurations.
-
-Define JSON schema inline on a configuration profile:
+- `appconfig.JsonSchemaValidator.fromInline(schema)`
+- `appconfig.JsonSchemaValidator.fromAsset(path)` _coming soon_
+- `appconfig.JsonSchemaValidator.fromBucket(bucket, key[, objectVersion])` _coming soon_
 
 ```ts
 new appconfig.HostedConfigurationProfile(this, 'Config', {
@@ -86,34 +77,92 @@ new appconfig.HostedConfigurationProfile(this, 'Config', {
   name: 'My Config',
   validators: [
     appconfig.JsonSchemaValidator.fromInline(`{
-      "$schema": "http://json-schema.org/draft/2019-09/schema#",
-      "type":"object",
-      "properties": {
-        "name": { "type": "string" },
-        "email": { "type": "string" },
-        "age": { "type": "number" }
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "title": "$id$",
+      "description": "BasicFeatureToggle-1",
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "[^\\s]+$": {
+          "type": "boolean"
+        }
       },
-      "required": [ "email" ]
+      "minProperties": 1
     }`)
   ]
 });
 ```
 
-Or you can create a custom validator with a lambda function:
+Read more about JSON schema here: [https://json-schema.org](https://json-schema.org)
+
+Lambda validators:
+
+- `appconfig.LambdaValidator.fromLambdaFunction(lambdaFunction)`
 
 ```ts
-const configValidator = new lambda.Function(this, 'ConfigValidator', {
-  // ...
-});
+const validator = new lambda.Function(this, 'Validator', { ... });
 
 new appconfig.HostedConfigurationProfile(this, 'Config', {
   application: app,
   name: 'My Config',
-  validators: [appconfig.LambdaValidator.fromLambdaFunction(configValidator)]
+  validators: [
+    appconfig.LambdaValidator.fromLambdaFunction(validator)
+  ]
 });
 ```
 
 Read more about AWS AppConfig validators here: [https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html)
+
+### Deployments
+
+```ts
+import * as appconfig from '@cuperman/cdk-appconfig';
+
+const app = new appconfig.Application( ... );
+const configProfile = new appconfig.HostedConfigurationProfile( ... );
+const configVersion = new appconfig.HostedConfigurationVersion( ... );
+
+const env = new appconfig.Environment(this, 'Env', {
+  name: 'Production'
+});
+
+const strategy = new appconfig.DeploymentStrategy(this, 'Stratey', {
+  name: 'Exponential Rollout',
+  growthType: appconfig.DeploymentStrategyGrowthType.EXPONENTIAL,
+  growthFactor: 2,
+  deploymentDurationInMinutes: 10,
+  finalBakeTimeInMinutes: 0
+});
+
+new appconfig.Deployment(this, 'Deployment', {
+  application: app,
+  configurationProfile: configProfile,
+  configurationVersionNumber: configVersion.versionNumber,
+  environment: env,
+  deploymentStrategy: strategy
+});
+```
+
+Use existing strategies:
+
+- `appconfig.DeploymentStrategy.fromPredefined(predefinedDeploymentStrategy)`
+- `appconfig.DeploymentStrategy.fromId(deploymentStrategyId)`
+
+```ts
+new appconfig.Deployment(this, 'Deployment', {
+  application: app,
+  configurationProfile: configProfile,
+  configurationVersionNumber: configVersion.versionNumber,
+  environment: env,
+  deploymentStrategy: appconfig.DeploymentStrategy.fromPredefined(
+    appconfig.PredefinedDeploymentStrategy.LINEAR_50_PERCENT_EVERY_30_SECONDS
+  )
+});
+```
+
+### Monitors
+
+Coming soon...
 
 ### Change Management
 
@@ -153,20 +202,4 @@ new appconfig.HostedConfigurationVersion(this, 'ConfigContent', {
   content: appconfig.Content.fromAsset(path.join(__dirname, 'config.yml')),
   initOnly: true
 });
-```
-
-## Releasing / Publishing
-
-```bash
-# bump version and tag
-yarn version --minor
-git push --tags
-
-# build the release package
-yarn build
-yarn test
-yarn package
-
-# publish the package to Github Packages
-npm publish ./pkg/js/cdk-appconfig@X.X.X.jsii.tgz
 ```
