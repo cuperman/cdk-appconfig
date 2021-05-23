@@ -190,7 +190,7 @@ new appconfig.Deployment(this, 'Deployment', {
 
 ### Monitors
 
-Coming soon...
+_coming soon_
 
 ### Change Management
 
