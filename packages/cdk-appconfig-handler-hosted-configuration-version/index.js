@@ -88,7 +88,7 @@ async function onUpdate(event) {
   const props = event.ResourceProperties;
   console.log('props', props);
 
-  if (props.InitOnly) {
+  if (props.InitOnly && props.InitOnly.toLowerCase() === 'true') {
     console.log('Init Only; skipping update');
     return { PhysicalResourceId: physicalId };
   }

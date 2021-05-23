@@ -15,7 +15,7 @@ function buildEvent(overrides = {}) {
       },
       Description: undefined,
       LatestVersionNumber: undefined,
-      InitOnly: false
+      InitOnly: 'false'
     }
   };
 
@@ -55,7 +55,7 @@ describe('Asset', () => {
             RequestType: 'Update',
             PhysicalResourceId: '1',
             ResourceProperties: {
-              InitOnly: false
+              InitOnly: 'false'
             }
           });
 
@@ -76,7 +76,7 @@ describe('Asset', () => {
             RequestType: 'Update',
             PhysicalResourceId: '1',
             ResourceProperties: {
-              InitOnly: true
+              InitOnly: 'true'
             }
           });
 

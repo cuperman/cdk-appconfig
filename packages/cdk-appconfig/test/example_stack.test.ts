@@ -13,21 +13,33 @@ class ExampleStack extends cdk.Stack {
       name: 'My Application'
     });
 
-    new appconfig.Environment(this, 'MyEnv', {
-      application,
-      name: 'Prod'
-    });
-
     const configurationProfile = new appconfig.HostedConfigurationProfile(this, 'MyConfig', {
       application,
       name: 'My Config'
     });
 
-    new appconfig.HostedConfigurationVersion(this, 'MyConfigContent', {
+    const configurationVersion = new appconfig.HostedConfigurationVersion(this, 'MyConfigContent', {
       application,
       configurationProfile,
       contentType: appconfig.ContentType.YAML,
       content: appconfig.Content.fromAsset(path.join(__dirname, '__fixtures__/config.yml'))
+    });
+
+    const environment = new appconfig.Environment(this, 'MyEnv', {
+      application,
+      name: 'Prod'
+    });
+
+    new appconfig.Deployment(this, 'MyDeployment', {
+      application,
+      configurationProfile,
+      configurationVersionNumber: configurationVersion.versionNumber,
+      environment,
+      deploymentStrategy: appconfig.DeploymentStrategy.fromPredefined(
+        this,
+        'AllAtOnce',
+        appconfig.PredefinedDeploymentStrategy.ALL_AT_ONCE
+      )
     });
   }
 }
@@ -58,6 +70,14 @@ describe('ExampleStack', () => {
             ObjectKey: anything()
           }
         }
+      })
+    );
+  });
+
+  it('has a deployment', () => {
+    expectCDK(example).to(
+      haveResource('AWS::AppConfig::Deployment', {
+        DeploymentStrategyId: 'AppConfig.AllAtOnce'
       })
     );
   });

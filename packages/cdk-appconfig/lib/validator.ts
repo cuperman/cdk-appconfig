@@ -24,8 +24,8 @@ export abstract class Validator {
 }
 
 export abstract class JsonSchemaValidator extends Validator {
-  public static fromInline(content: string): InlineJsonSchemaValidator {
-    return new InlineJsonSchemaValidator(content);
+  public static fromInline(schema: string): InlineJsonSchemaValidator {
+    return new InlineJsonSchemaValidator(schema);
   }
 
   // TODO:

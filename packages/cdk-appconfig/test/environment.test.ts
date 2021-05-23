@@ -30,7 +30,7 @@ describe('AppConfig', () => {
         );
       });
 
-      it('deletes environments by default, because it can', () => {
+      it('deletes environments by default because no resources depend on them by default', () => {
         expectCDK(stack).to(
           haveResource(
             'AWS::AppConfig::Environment',
