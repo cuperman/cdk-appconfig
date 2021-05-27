@@ -32,13 +32,10 @@ import * as appconfig from '@cuperman/cdk-appconfig';
 
 const configBucket = new s3.Bucket(this, 'ConfigBucket');
 
-const app = new appconfig.Application(this, 'App', {
-  name: 'My Application'
-});
+const app = new appconfig.Application(this, 'App');
 
 const configProfile = new appconfig.S3ConfigurationProfile(this, 'ConfigProfile', {
   application: app,
-  name: 'My Configuration Profile',
   s3Bucket: configBucket,
   s3ObjectKey: 'path/to/config.json'
 });
@@ -65,13 +62,10 @@ Example of using CDK assets to manage AppConfig hosted configurations:
 ```ts
 import * as appconfig from '@cuperman/cdk-appconfig';
 
-const app = new appconfig.Application(this, 'App', {
-  name: 'My Application'
-});
+const app = new appconfig.Application(this, 'App');
 
 const configProfile = new appconfig.HostedConfigurationProfile(this, 'ConfigProfile', {
-  application: app,
-  name: 'My Configuration Profile'
+  application: app
 });
 
 new appconfig.HostedConfigurationVersion(this, 'ConfigVersion', {
@@ -97,7 +91,6 @@ Example defining inline JSON schema:
 ```ts
 new appconfig.HostedConfigurationProfile(this, 'Config', {
   application: app,
-  name: 'My Config',
   validators: [
     appconfig.JsonSchemaValidator.fromInline(`{
       "$schema": "http://json-schema.org/draft-04/schema#",
@@ -127,7 +120,6 @@ const validator = new lambda.Function(this, 'Validator', { ... });
 
 new appconfig.HostedConfigurationProfile(this, 'Config', {
   application: app,
-  name: 'My Config',
   validators: [
     appconfig.LambdaValidator.fromLambdaFunction(validator)
   ]
@@ -148,12 +140,9 @@ const app = new appconfig.Application( ... );
 const configProfile = new appconfig.HostedConfigurationProfile( ... );
 const configVersion = new appconfig.HostedConfigurationVersion( ... );
 
-const env = new appconfig.Environment(this, 'Env', {
-  name: 'Production'
-});
+const prodEnv = new appconfig.Environment(this, 'ProdEnv');
 
-const strategy = new appconfig.DeploymentStrategy(this, 'Stratey', {
-  name: 'Exponential Rollout',
+const exponentialStrategy = new appconfig.DeploymentStrategy(this, 'ExponentialStrategy', {
   growthType: appconfig.DeploymentStrategyGrowthType.EXPONENTIAL,
   growthFactor: 2,
   deploymentDurationInMinutes: 10,
@@ -164,8 +153,8 @@ new appconfig.Deployment(this, 'Deployment', {
   application: app,
   configurationProfile: configProfile,
   configurationVersionNumber: configVersion.versionNumber,
-  environment: env,
-  deploymentStrategy: strategy
+  environment: prodEnv,
+  deploymentStrategy: exponentialStrategy
 });
 ```
 
@@ -180,7 +169,7 @@ new appconfig.Deployment(this, 'Deployment', {
   application: app,
   configurationProfile: configProfile,
   configurationVersionNumber: configVersion.versionNumber,
-  environment: env,
+  environment: prodEnv,
   deploymentStrategy: appconfig.DeploymentStrategy.fromDeploymentStrategyId(
     appconfig.PredefinedDeploymentStrategy.LINEAR_50_PERCENT_EVERY_30_SECONDS
   )
@@ -198,15 +187,13 @@ By default, applications, configuration profiles, and hosted configuration versi
 The default behavior described above can be altered using the `removalPolicy` property one each AppConfig construct. Some examples are below.
 
 ```ts
-const env = new appconfig.Environment(this, 'ProdEnv', {
+const prodEnv = new appconfig.Environment(this, 'ProdEnv', {
   application: app,
-  name: 'Production',
   removalPolicy: cdk.RemovalPolicy.RETAIN
 });
 
 const config = new appconfig.HostedConfigurationProfile(this, 'Config', {
   application: app,
-  name: 'My Config',
   removalPolicy: cdk.RemovalPolicy.DESTROY
 });
 
