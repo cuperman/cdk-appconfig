@@ -35,7 +35,7 @@ class ExampleStack extends cdk.Stack {
       configurationProfile,
       configurationVersionNumber: configurationVersion.versionNumber,
       environment,
-      deploymentStrategy: appconfig.DeploymentStrategy.fromPredefined(
+      deploymentStrategy: appconfig.DeploymentStrategy.fromDeploymentStrategyId(
         this,
         'AllAtOnce',
         appconfig.PredefinedDeploymentStrategy.ALL_AT_ONCE

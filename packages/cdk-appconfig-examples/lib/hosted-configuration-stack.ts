@@ -48,7 +48,7 @@ export class HostedConfigurationStack extends cdk.Stack {
       name: 'prod'
     });
 
-    this.strategy = appconfig.DeploymentStrategy.fromPredefined(
+    this.strategy = appconfig.DeploymentStrategy.fromDeploymentStrategyId(
       this,
       'Strategy',
       appconfig.PredefinedDeploymentStrategy.ALL_AT_ONCE
