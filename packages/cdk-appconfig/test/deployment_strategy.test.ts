@@ -105,24 +105,20 @@ describe('AppConfig', () => {
       });
     });
 
-    describe('fromPredefined', () => {
+    describe('fromDeploymentStrategyId', () => {
       const stack = buildCdkStack();
-      const strategy = DeploymentStrategy.fromPredefined(
-        stack,
-        'PredefinedStrategy',
-        PredefinedDeploymentStrategy.ALL_AT_ONCE
-      );
 
-      it('has a deployment strategy id', () => {
+      it('support predefined deployment strategies', () => {
+        const strategy = DeploymentStrategy.fromDeploymentStrategyId(
+          stack,
+          'PredefinedStrategy',
+          PredefinedDeploymentStrategy.ALL_AT_ONCE
+        );
         expect(strategy.deploymentStrategyId).toEqual('AppConfig.AllAtOnce');
       });
-    });
 
-    describe('fromId', () => {
-      it('has a deployment strategy id', () => {
-        const stack = buildCdkStack();
-        const strategy = DeploymentStrategy.fromId(stack, 'ImportedStrategy', 'abc123');
-
+      it('supports custom deployment strategies', () => {
+        const strategy = DeploymentStrategy.fromDeploymentStrategyId(stack, 'ImportedStrategy', 'abc123');
         expect(strategy.deploymentStrategyId).toEqual('abc123');
       });
     });

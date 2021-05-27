@@ -5,7 +5,7 @@ export interface IDeploymentStrategy extends cdk.IResource {
   readonly deploymentStrategyId: string;
 }
 
-export class DeploymentStrategyImport extends cdk.Resource implements IDeploymentStrategy {
+export class ImportedDeploymentStrategy extends cdk.Resource implements IDeploymentStrategy {
   public readonly deploymentStrategyId: string;
 
   constructor(scope: cdk.Construct, id: string, deploymentStrategyId: string) {
@@ -69,16 +69,12 @@ export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrat
     this.deploymentStrategyId = this.resource.ref;
   }
 
-  public static fromId(scope: cdk.Construct, id: string, deploymentStrategyId: string) {
-    return new DeploymentStrategyImport(scope, id, deploymentStrategyId);
-  }
-
-  public static fromPredefined(
+  public static fromDeploymentStrategyId(
     scope: cdk.Construct,
     id: string,
-    predefinedDeploymentStrategy: PredefinedDeploymentStrategy
+    deploymentStrategyId: PredefinedDeploymentStrategy | string
   ) {
-    return new DeploymentStrategyImport(scope, id, predefinedDeploymentStrategy);
+    return new ImportedDeploymentStrategy(scope, id, deploymentStrategyId);
   }
 
   protected prepare() {

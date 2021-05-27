@@ -171,8 +171,7 @@ new appconfig.Deployment(this, 'Deployment', {
 
 Deployment strategies are global (not defined within your Application scope), so you may prefer to import them. You can import Deployment strategies that you created, or ones that are predefined by AppConfig.
 
-- `DeploymentStrategy.fromId(deploymentStrategyId)`
-- `DeploymentStrategy.fromPredefined(predefinedDeploymentStrategy)`
+- `DeploymentStrategy.fromDeploymentStrategyId(deploymentStrategyId)`
 
 Example using a predefined deployment strategy:
 
@@ -182,7 +181,7 @@ new appconfig.Deployment(this, 'Deployment', {
   configurationProfile: configProfile,
   configurationVersionNumber: configVersion.versionNumber,
   environment: env,
-  deploymentStrategy: appconfig.DeploymentStrategy.fromPredefined(
+  deploymentStrategy: appconfig.DeploymentStrategy.fromDeploymentStrategyId(
     appconfig.PredefinedDeploymentStrategy.LINEAR_50_PERCENT_EVERY_30_SECONDS
   )
 });
