@@ -8,7 +8,7 @@ export enum ValidatorType {
 }
 
 export interface ValidatorConfig {
-  readonly type: ValidatorType;
+  readonly validatorType: ValidatorType;
   readonly content: string;
 }
 
@@ -45,7 +45,7 @@ export class InlineJsonSchemaValidator extends JsonSchemaValidator {
 
   bind(_scope: cdk.Construct): ValidatorConfig {
     return {
-      type: ValidatorType.JSON_SCHEMA,
+      validatorType: ValidatorType.JSON_SCHEMA,
       content: this.content
     };
   }
@@ -66,7 +66,7 @@ export class LambdaValidator extends Validator {
     });
 
     return {
-      type: ValidatorType.LAMBDA,
+      validatorType: ValidatorType.LAMBDA,
       content: this.lambdaFunction.functionArn
     };
   }

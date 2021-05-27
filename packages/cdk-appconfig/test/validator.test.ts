@@ -27,7 +27,7 @@ describe('AppConfig', () => {
         const validatorConfig = inlineSchemaValidator.bind(stack);
 
         it('returns a ContentConfig with inline JSON schema', () => {
-          expect(validatorConfig.type).toEqual('JSON_SCHEMA');
+          expect(validatorConfig.validatorType).toEqual('JSON_SCHEMA');
           expect(validatorConfig.content).toEqual(jsonSchema);
         });
       });
