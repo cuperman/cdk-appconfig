@@ -31,7 +31,7 @@ export enum DeploymentStrategyGrowthType {
 }
 
 export interface DeploymentStrategyProps {
-  readonly name: string;
+  readonly name?: string;
   readonly deploymentDurationInMinutes: number;
   readonly growthFactor: number;
   readonly replicateTo?: DeploymentStrategyReplication;
@@ -47,9 +47,7 @@ export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrat
   private readonly resource: appconfig.CfnDeploymentStrategy;
 
   constructor(scope: cdk.Construct, id: string, props: DeploymentStrategyProps) {
-    super(scope, id, {
-      physicalName: props.name
-    });
+    super(scope, id);
 
     const DEFAULT_REPLICATION = DeploymentStrategyReplication.NONE;
     const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.DESTROY;
@@ -57,7 +55,7 @@ export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrat
     this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::DeploymentStrategy');
 
     this.resource = new appconfig.CfnDeploymentStrategy(this, 'Resource', {
-      name: props.name,
+      name: props.name || cdk.Names.uniqueId(this),
       deploymentDurationInMinutes: props.deploymentDurationInMinutes,
       growthFactor: props.growthFactor,
       replicateTo: props.replicateTo || DEFAULT_REPLICATION,

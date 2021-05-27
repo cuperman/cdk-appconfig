@@ -1,4 +1,4 @@
-import { expect as expectCDK, haveResource, ResourcePart } from '@aws-cdk/assert';
+import { anything, expect as expectCDK, haveResource, ResourcePart } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
 
 import { buildCdkStack, buildApplication } from './helpers';
@@ -8,10 +8,7 @@ describe('AppConfig', () => {
   describe('Application', () => {
     describe('with required props', () => {
       const stack = buildCdkStack();
-
-      const application = new Application(stack, 'MyApplication', {
-        name: 'MyApp'
-      });
+      const application = new Application(stack, 'MyApplication');
 
       it('has an application id', () => {
         expect(typeof application.applicationId).toEqual('string');
@@ -20,7 +17,7 @@ describe('AppConfig', () => {
       it('creates an application resource with required properties', () => {
         expectCDK(stack).to(
           haveResource('AWS::AppConfig::Application', {
-            Name: 'MyApp'
+            Name: anything()
           })
         );
       });

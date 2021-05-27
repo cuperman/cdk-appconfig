@@ -11,7 +11,7 @@ export interface IConfigurationProfile extends cdk.IResource {
 
 export interface ConfigurationProfileBaseProps {
   readonly application: Application;
-  readonly name: string;
+  readonly name?: string;
   readonly validators?: Validator[];
   readonly description?: string;
   readonly removalPolicy?: cdk.RemovalPolicy;
@@ -27,9 +27,7 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
   private readonly resource: appconfig.CfnConfigurationProfile;
 
   constructor(scope: cdk.Construct, id: string, props: ConfigurationProfileProps) {
-    super(scope, id, {
-      physicalName: props.name
-    });
+    super(scope, id);
 
     const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.RETAIN;
 
@@ -39,7 +37,7 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
 
     this.resource = new appconfig.CfnConfigurationProfile(this, 'Resource', {
       applicationId: props.application.applicationId,
-      name: props.name,
+      name: props.name || cdk.Names.uniqueId(this),
       description: props.description,
       locationUri: props.locationUri,
       validators: validatorConfigs

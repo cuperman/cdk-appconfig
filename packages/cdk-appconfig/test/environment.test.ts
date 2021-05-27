@@ -11,8 +11,7 @@ describe('AppConfig', () => {
       const application = buildApplication(stack);
 
       const environment = new Environment(stack, 'MyEnvironment', {
-        application,
-        name: 'MyEnv'
+        application
       });
 
       it('has an environment id', () => {
@@ -25,7 +24,7 @@ describe('AppConfig', () => {
             ApplicationId: {
               Ref: anything()
             },
-            Name: 'MyEnv'
+            Name: anything()
           })
         );
       });

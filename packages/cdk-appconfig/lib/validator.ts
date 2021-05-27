@@ -8,7 +8,6 @@ export enum ValidatorType {
 }
 
 export interface ValidatorConfig {
-  // @ts-ignore: (JSII5018) this must be named "type" to be compatible with lower level construct
   readonly type: ValidatorType;
   readonly content: string;
 }

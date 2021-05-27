@@ -20,7 +20,6 @@ describe('AppConfig', () => {
 
       const profile = new ConfigurationProfile(stack, 'MyProfile', {
         application,
-        name: 'MyProfile',
         locationUri: 'hosted'
       });
 
@@ -34,7 +33,7 @@ describe('AppConfig', () => {
             ApplicationId: {
               Ref: anything()
             },
-            Name: 'MyProfile',
+            Name: anything(),
             LocationUri: 'hosted'
           })
         );

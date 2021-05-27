@@ -1,4 +1,4 @@
-import { expect as expectCDK, haveResource, ResourcePart } from '@aws-cdk/assert';
+import { anything, expect as expectCDK, haveResource, ResourcePart } from '@aws-cdk/assert';
 import { buildCdkStack } from './helpers';
 import * as cdk from '@aws-cdk/core';
 import {
@@ -14,7 +14,6 @@ describe('AppConfig', () => {
       const stack = buildCdkStack();
 
       const strategy = new DeploymentStrategy(stack, 'MyDeploymentStrategy', {
-        name: 'My Deployment Strategy',
         deploymentDurationInMinutes: 0,
         growthFactor: 100
       });
@@ -26,7 +25,7 @@ describe('AppConfig', () => {
       it('creates a deployment strategy with required properties', () => {
         expectCDK(stack).to(
           haveResource('AWS::AppConfig::DeploymentStrategy', {
-            Name: 'My Deployment Strategy',
+            Name: anything(),
             DeploymentDurationInMinutes: 0,
             GrowthFactor: 100,
             ReplicateTo: 'NONE'
