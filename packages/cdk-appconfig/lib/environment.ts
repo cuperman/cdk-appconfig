@@ -1,16 +1,20 @@
 import * as cdk from '@aws-cdk/core';
 import * as appconfig from '@aws-cdk/aws-appconfig';
 
-import { Application } from './application';
+import { IApplication } from './application';
+
+export interface IEnvironment extends cdk.IResource {
+  readonly environmentId: string;
+}
 
 export interface EnvironmentProps {
-  readonly application: Application;
+  readonly application: IApplication;
   readonly name?: string;
   readonly description?: string;
   readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
-export class Environment extends cdk.Resource implements cdk.ITaggable {
+export class Environment extends cdk.Resource implements IEnvironment, cdk.ITaggable {
   public readonly environmentId: string;
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnEnvironment;

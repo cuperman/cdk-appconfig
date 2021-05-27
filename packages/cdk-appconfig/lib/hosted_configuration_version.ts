@@ -5,7 +5,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as cr from '@aws-cdk/custom-resources';
 import * as iam from '@aws-cdk/aws-iam';
 
-import { Application } from './application';
+import { IApplication } from './application';
 import { IConfigurationProfile } from './configuration_profile';
 import { ContentType, Content } from './content';
 
@@ -24,8 +24,12 @@ function uppercaseProperties(props: { [key: string]: any }): { [key: string]: an
   }, {});
 }
 
+export interface IHostedConfigurationVersion {
+  readonly versionNumber: string;
+}
+
 export interface HostedConfigurationVersionProps {
-  readonly application: Application;
+  readonly application: IApplication;
   readonly configurationProfile: IConfigurationProfile;
   readonly contentType: ContentType;
   readonly content: Content;
@@ -35,7 +39,7 @@ export interface HostedConfigurationVersionProps {
   readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
-export class HostedConfigurationVersion extends cdk.Resource {
+export class HostedConfigurationVersion extends cdk.Resource implements IHostedConfigurationVersion {
   public readonly versionNumber: string;
 
   constructor(scope: cdk.Construct, id: string, props: HostedConfigurationVersionProps) {
