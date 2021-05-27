@@ -1,17 +1,17 @@
 import * as cdk from '@aws-cdk/core';
 import * as appconfig from '@aws-cdk/aws-appconfig';
 
-import { Application } from './application';
+import { IApplication } from './application';
 import { IConfigurationProfile } from './configuration_profile';
 import { IDeploymentStrategy } from './deployment_strategy';
-import { Environment } from './environment';
+import { IEnvironment } from './environment';
 
 export interface DeploymentProps {
-  readonly application: Application;
+  readonly application: IApplication;
   readonly configurationProfile: IConfigurationProfile;
   readonly configurationVersionNumber: string;
   readonly deploymentStrategy: IDeploymentStrategy;
-  readonly environment: Environment;
+  readonly environment: IEnvironment;
   readonly description?: string;
 }
 

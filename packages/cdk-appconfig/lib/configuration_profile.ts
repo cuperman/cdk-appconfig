@@ -2,7 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as appconfig from '@aws-cdk/aws-appconfig';
 import * as s3 from '@aws-cdk/aws-s3';
 
-import { Application } from './application';
+import { IApplication } from './application';
 import { Validator } from './validator';
 
 export interface IConfigurationProfile extends cdk.IResource {
@@ -10,7 +10,7 @@ export interface IConfigurationProfile extends cdk.IResource {
 }
 
 export interface ConfigurationProfileBaseProps {
-  readonly application: Application;
+  readonly application: IApplication;
   readonly name?: string;
   readonly validators?: Validator[];
   readonly description?: string;

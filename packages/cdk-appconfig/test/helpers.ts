@@ -22,7 +22,7 @@ export function buildCdkStack(options?: { tags?: Tags }) {
   return stack;
 }
 
-export function buildApplication(scope: cdk.Construct, options?: { name?: string }) {
+export function buildApplication(scope: cdk.Construct, options?: { name?: string }): appconfig.IApplication {
   return new appconfig.Application(scope, 'MyApplication', {
     name: options?.name || 'MyApplication'
   });
@@ -30,8 +30,8 @@ export function buildApplication(scope: cdk.Construct, options?: { name?: string
 
 export function buildHostedProfile(
   scope: cdk.Construct,
-  options?: { application?: appconfig.Application; name?: string }
-) {
+  options?: { application?: appconfig.IApplication; name?: string }
+): appconfig.IConfigurationProfile {
   return new appconfig.HostedConfigurationProfile(scope, 'MyHostedConfigurationProfile', {
     application: options?.application || buildApplication(scope),
     name: options?.name || 'MyHostedConfigurationProfile'
@@ -40,8 +40,8 @@ export function buildHostedProfile(
 
 export function buildEnvironment(
   scope: cdk.Construct,
-  options?: { application?: appconfig.Application; name?: string }
-) {
+  options?: { application?: appconfig.IApplication; name?: string }
+): appconfig.IEnvironment {
   return new appconfig.Environment(scope, 'MyEnvironment', {
     application: options?.application || buildApplication(scope),
     name: options?.name || 'MyEnvironment'
@@ -51,7 +51,7 @@ export function buildEnvironment(
 export function buildDeploymentStrategy(
   scope: cdk.Construct,
   options?: { name?: string; deploymentDurationInMinutes?: number; growthFactor?: number }
-) {
+): appconfig.IDeploymentStrategy {
   return new appconfig.DeploymentStrategy(scope, 'MyDeploymentStrategy', {
     name: options?.name || 'MyDeploymentStrategy',
     deploymentDurationInMinutes: options?.deploymentDurationInMinutes || 0,
