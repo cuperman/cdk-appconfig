@@ -5,7 +5,7 @@ import { Application } from './application';
 
 export interface EnvironmentProps {
   readonly application: Application;
-  readonly name: string;
+  readonly name?: string;
   readonly description?: string;
   readonly removalPolicy?: cdk.RemovalPolicy;
 }
@@ -16,9 +16,7 @@ export class Environment extends cdk.Resource implements cdk.ITaggable {
   private readonly resource: appconfig.CfnEnvironment;
 
   constructor(scope: cdk.Construct, id: string, props: EnvironmentProps) {
-    super(scope, id, {
-      physicalName: props.name
-    });
+    super(scope, id);
 
     const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.DESTROY;
 
@@ -26,7 +24,7 @@ export class Environment extends cdk.Resource implements cdk.ITaggable {
 
     this.resource = new appconfig.CfnEnvironment(this, 'Resource', {
       applicationId: props.application.applicationId,
-      name: props.name,
+      name: props.name || cdk.Names.uniqueId(this),
       description: props.description
       // TODO: monitors
       // monitors: []
