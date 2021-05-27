@@ -40,7 +40,7 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
       name: props.name || cdk.Names.uniqueId(this),
       description: props.description,
       locationUri: props.locationUri,
-      validators: validatorConfigs
+      validators: validatorConfigs?.map((config) => ({ ...config, type: config.validatorType }))
     });
 
     this.resource.applyRemovalPolicy(props.removalPolicy || DEFAULT_REMOVAL_POLICY);
