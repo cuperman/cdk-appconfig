@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as appconfig from '../lib';
+import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
 
 interface Tags {
   [key: string]: string;
@@ -61,5 +62,16 @@ export function buildDeploymentStrategy(
     name: options?.name || 'MyDeploymentStrategy',
     deploymentDurationInMinutes: options?.deploymentDurationInMinutes || 0,
     growthFactor: options?.growthFactor || 0
+  });
+}
+
+export function buildAlarm(scope: cdk.Construct): cloudwatch.IAlarm {
+  return new cloudwatch.Alarm(scope, 'Alarm', {
+    metric: new cloudwatch.Metric({
+      namespace: 'namespace',
+      metricName: 'metric'
+    }),
+    threshold: 100,
+    evaluationPeriods: 2
   });
 }
