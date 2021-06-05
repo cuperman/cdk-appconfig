@@ -1,7 +1,7 @@
-import { expect as expectCDK, haveResource, anything, ResourcePart } from '@aws-cdk/assert';
+import { expect as expectCDK, haveResource, haveResourceLike, anything, ResourcePart } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
 
-import { buildCdkStack, buildApplication } from './helpers';
+import { buildCdkStack, buildApplication, buildAlarm } from './helpers';
 import { Environment } from '../lib';
 
 describe('AppConfig', () => {
@@ -41,16 +41,49 @@ describe('AppConfig', () => {
           )
         );
       });
+
+      it('creates an alarm role', () => {
+        expectCDK(stack).to(
+          haveResourceLike('AWS::IAM::Role', {
+            AssumeRolePolicyDocument: {
+              Statement: [
+                {
+                  Principal: {
+                    Service: 'appconfig.amazonaws.com'
+                  }
+                }
+              ]
+            },
+            Policies: [
+              {
+                PolicyName: 'SSMCloudWatchAlarmDiscoveryRole',
+                PolicyDocument: {
+                  Statement: [
+                    {
+                      Effect: 'Allow',
+                      Action: 'cloudwatch:DescribeAlarms',
+                      Resource: '*'
+                    }
+                  ]
+                }
+              }
+            ]
+          })
+        );
+      });
     });
 
     describe('with optional props', () => {
       const stack = buildCdkStack();
       const application = buildApplication(stack, 'MyApplication');
 
+      const alarm = buildAlarm(stack);
+
       new Environment(stack, 'MyEnvironment', {
         application,
         name: 'MyEnv',
         description: 'My environment',
+        alarms: [alarm],
         removalPolicy: cdk.RemovalPolicy.RETAIN
       });
 
@@ -64,7 +97,13 @@ describe('AppConfig', () => {
                   Ref: anything()
                 },
                 Name: 'MyEnv',
-                Description: 'My environment'
+                Description: 'My environment',
+                Monitors: [
+                  {
+                    AlarmArn: anything(),
+                    AlarmRoleArn: anything()
+                  }
+                ]
               },
               UpdateReplacePolicy: 'Retain',
               DeletionPolicy: 'Retain'
