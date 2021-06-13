@@ -21,7 +21,17 @@ describe('CdkExamplesStack', () => {
   it('has a lambda function with AppConfig lambda extension', () => {
     expectCDK(stack).to(
       haveResource('AWS::Lambda::Function', {
-        Layers: ['arn:aws:lambda:us-east-1:027255383542:layer:AWS-AppConfig-Extension:44']
+        Layers: [
+          {
+            'Fn::FindInMap': [
+              'LambdaExtensionMap',
+              {
+                Ref: 'AWS::Region'
+              },
+              'arn'
+            ]
+          }
+        ]
       })
     );
   });
