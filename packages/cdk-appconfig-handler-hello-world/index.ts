@@ -1,6 +1,5 @@
 /*
- * Example from:
- * https://aws.amazon.com/blogs/mt/introducing-aws-appconfig-lambda-extension-deploying-application-configuration-serverless/
+ * Reference: https://aws.amazon.com/blogs/mt/introducing-aws-appconfig-lambda-extension-deploying-application-configuration-serverless/
  */
 
 import * as http from 'http';
