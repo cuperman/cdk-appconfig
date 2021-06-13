@@ -12,9 +12,9 @@ describe('AppConfig', () => {
   describe('Deployment', () => {
     describe('with required props', () => {
       const stack = buildCdkStack();
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
       const configurationProfile = buildHostedProfile(stack, { application });
-      const environment = buildEnvironment(stack, { application });
+      const environment = buildEnvironment(stack, 'MyEnvironment', { application });
       const deploymentStrategy = buildDeploymentStrategy(stack);
 
       new appconfig.Deployment(stack, 'MyDeployment', {
@@ -48,9 +48,9 @@ describe('AppConfig', () => {
 
     describe('with optional props', () => {
       const stack = buildCdkStack();
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
       const configurationProfile = buildHostedProfile(stack, { application });
-      const environment = buildEnvironment(stack, { application });
+      const environment = buildEnvironment(stack, 'MyEnvironment', { application });
       const deploymentStrategy = buildDeploymentStrategy(stack);
 
       new appconfig.Deployment(stack, 'MyDeployment', {
@@ -73,9 +73,9 @@ describe('AppConfig', () => {
 
     describe('with tags', () => {
       const stack = buildCdkStack({ tags: { Foo: 'Bar', Kanye: 'West' } });
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
       const configurationProfile = buildHostedProfile(stack, { application });
-      const environment = buildEnvironment(stack, { application });
+      const environment = buildEnvironment(stack, 'MyEnvironment', { application });
       const deploymentStrategy = buildDeploymentStrategy(stack);
 
       new appconfig.Deployment(stack, 'MyDeployment', {

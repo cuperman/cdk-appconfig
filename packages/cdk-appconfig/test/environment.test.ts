@@ -8,7 +8,7 @@ describe('AppConfig', () => {
   describe('Environment', () => {
     describe('with required props', () => {
       const stack = buildCdkStack();
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
 
       const environment = new Environment(stack, 'MyEnvironment', {
         application
@@ -45,7 +45,7 @@ describe('AppConfig', () => {
 
     describe('with optional props', () => {
       const stack = buildCdkStack();
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
 
       new Environment(stack, 'MyEnvironment', {
         application,
@@ -77,7 +77,7 @@ describe('AppConfig', () => {
 
     describe('with tags', () => {
       const stack = buildCdkStack({ tags: { Foo: 'Bar', Kanye: 'West' } });
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
 
       new Environment(stack, 'MyEnvironment', {
         application,
