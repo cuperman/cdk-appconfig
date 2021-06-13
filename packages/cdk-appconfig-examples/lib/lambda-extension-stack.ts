@@ -50,15 +50,6 @@ export class LambdaExtensionStack extends cdk.Stack {
 
     const helloWorldFunction = new lambda.Function(this, 'HelloWorldFunction', {
       runtime: lambda.Runtime.NODEJS_14_X,
-      layers: [
-        lambda.LayerVersion.fromLayerVersionArn(
-          this,
-          'AppConfigLambdaExtension',
-          // TODO: make dynamic
-          // ref: https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html#appconfig-integration-lambda-extensions-enabling
-          'arn:aws:lambda:us-east-1:027255383542:layer:AWS-AppConfig-Extension:44'
-        )
-      ],
       code: lambda.Code.fromAsset(HELLO_WORLD_CODE_PATH),
       handler: 'index.lambdaHandler',
       environment: {
@@ -71,6 +62,9 @@ export class LambdaExtensionStack extends cdk.Stack {
         AWS_APPCONFIG_EXTENSION_HTTP_URL: `http://localhost:2772/applications/${application.applicationId}/environments/${environment.environmentId}/configurations/${configuration.configurationProfileId}`
       }
     });
+
+    // apply lambda extension
+    helloWorldFunction.addLayers(new appconfig.LambdaExtensionLayer(this, 'AppConfigLambdaExtension'));
 
     // allow lambda function to get configurations from appconfig
     configuration.grantGetConfiguration(helloWorldFunction, environment);
