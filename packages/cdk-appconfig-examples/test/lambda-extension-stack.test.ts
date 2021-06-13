@@ -1,4 +1,4 @@
-import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
+import { expect as expectCDK, haveResource, haveResourceLike } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
 import { LambdaExtensionStack } from '../lib';
 
@@ -32,6 +32,21 @@ describe('CdkExamplesStack', () => {
             ]
           }
         ]
+      })
+    );
+  });
+
+  it('has a policy granting access to get configurations from app config', () => {
+    expectCDK(stack).to(
+      haveResourceLike('AWS::IAM::Policy', {
+        PolicyDocument: {
+          Statement: [
+            {
+              Effect: 'Allow',
+              Action: 'appconfig:GetConfiguration'
+            }
+          ]
+        }
       })
     );
   });
