@@ -1,6 +1,6 @@
-# CDK AppConfig Asset
+# CDK AppConfig Handler: Hosted Configuration Version
 
-The code that runs in the lambda custom authorizer
+Lambda handler for AppConfig Hosted Configuration Version custom resource
 
 ## Development
 

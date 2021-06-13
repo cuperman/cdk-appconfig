@@ -1,3 +1,7 @@
+/*
+ * Reference: https://aws.amazon.com/blogs/mt/introducing-aws-appconfig-lambda-extension-deploying-application-configuration-serverless/
+ */
+
 import * as path from 'path';
 
 import * as cdk from '@aws-cdk/core';

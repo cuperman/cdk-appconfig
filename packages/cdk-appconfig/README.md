@@ -129,6 +129,22 @@ new appconfig.HostedConfigurationProfile(this, 'Config', {
 For more information about creating configuration validators, read this:
 [https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-validators.html)
 
+### Accessing Configurations
+
+Grant any grantable object access to get configurations by using the `grantGetConfiguration` method on a ConfigurationProfile object. Since configurations are not associated to an environment, access to all environments is granted unless a specific environment is passed as an argument (optional).
+
+```ts
+const app = new appconfig.Application( ... );
+const env = new appconfig.Environment( ... );
+const config = new appconfig.HostedConfigurationProfile( ... );
+
+// grant access to get configurations from config on any environment
+grantable.grantGetConfiguration(config);
+
+// grant access to get configurations from config on a specific environment
+grantable.grantGetConfiguration(config, env);
+```
+
 ### Deployments
 
 Deploy your configuration versions to an environment using a deployment strategy. Here's an example:
@@ -179,6 +195,26 @@ new appconfig.Deployment(this, 'Deployment', {
 ### Monitors
 
 _coming soon_
+
+### Lambda Extensions
+
+Use `LambdaExtensionLayer` class to add the lambda extension to any lambda function as a lambda layer. And don't forget to grant access for the lambda function to read configurations.
+
+```ts
+const app = new appconfig.Application( ... );
+const env = new appconfig.Environment( ... );
+const config = new appconfig.HostedConfigurationProfile( ... );
+
+const fn = new lambda.Function( ... );
+
+// add the lambda extension layer
+fn.addLayers(new appconfig.LambdaExtensionLayer(this, 'AppConfigLambdaExtension'));
+
+// grant access to get configurations
+configuration.grantGetConfiguration(fn, env);
+```
+
+For more info on AppConfig lambda extensions, see [https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html)
 
 ### Change Management
 

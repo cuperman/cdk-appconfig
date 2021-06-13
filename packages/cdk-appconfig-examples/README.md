@@ -8,13 +8,14 @@ $ npm login --registry=https://npm.pkg.github.com --scope=@cuperman
 
 # list the available stacks
 $ npx aws-cdk list --app "npx @cuperman/cdk-appconfig-examples"
-ExampleHostedConfiguration
+AppConfigExample-HostedConfiguration
+AppConfigExample-LambdaExtension
 
 # synthesize a stack (create CloudFormation template)
-$ npx aws-cdk synth --app "npx @cuperman/cdk-appconfig-examples" ExampleHostedConfiguration > template.yml
+$ npx aws-cdk synth --app "npx @cuperman/cdk-appconfig-examples" AppConfigExample-HostedConfiguration > template.yml
 
 # deploy an example to your AWS account
-$ npx aws-cdk deploy --app "npx @cuperman/cdk-appconfig-examples" ExampleHostedConfiguration
+$ npx aws-cdk deploy --app "npx @cuperman/cdk-appconfig-examples" AppConfigExample-HostedConfiguration
 ```
 
 ## Development
