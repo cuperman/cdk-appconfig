@@ -22,8 +22,12 @@ export function buildCdkStack(options?: { tags?: Tags }) {
   return stack;
 }
 
-export function buildApplication(scope: cdk.Construct, options?: { name?: string }): appconfig.IApplication {
-  return new appconfig.Application(scope, 'MyApplication', {
+export function buildApplication(
+  scope: cdk.Construct,
+  id: string,
+  options?: { name?: string }
+): appconfig.IApplication {
+  return new appconfig.Application(scope, id, {
     name: options?.name || 'MyApplication'
   });
 }
@@ -33,17 +37,18 @@ export function buildHostedProfile(
   options?: { application?: appconfig.IApplication; name?: string }
 ): appconfig.IConfigurationProfile {
   return new appconfig.HostedConfigurationProfile(scope, 'MyHostedConfigurationProfile', {
-    application: options?.application || buildApplication(scope),
+    application: options?.application || buildApplication(scope, 'MyApplication'),
     name: options?.name || 'MyHostedConfigurationProfile'
   });
 }
 
 export function buildEnvironment(
   scope: cdk.Construct,
+  id: string,
   options?: { application?: appconfig.IApplication; name?: string }
 ): appconfig.IEnvironment {
-  return new appconfig.Environment(scope, 'MyEnvironment', {
-    application: options?.application || buildApplication(scope),
+  return new appconfig.Environment(scope, id, {
+    application: options?.application || buildApplication(scope, 'MyApplication'),
     name: options?.name || 'MyEnvironment'
   });
 }

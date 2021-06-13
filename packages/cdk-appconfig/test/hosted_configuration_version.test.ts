@@ -11,7 +11,7 @@ describe('AppConfig', () => {
   describe('HostedConfigurationVersion', () => {
     describe('with required props', () => {
       const stack = buildCdkStack();
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
       const profile = buildHostedProfile(stack, { application });
 
       const configVersion = new appconfig.HostedConfigurationVersion(stack, 'MyConfigVersion', {
@@ -78,7 +78,7 @@ describe('AppConfig', () => {
 
     describe('with optional props', () => {
       const stack = buildCdkStack();
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
       const profile = buildHostedProfile(stack, { application });
 
       new appconfig.HostedConfigurationVersion(stack, 'MyConfigVersion', {
@@ -118,7 +118,7 @@ describe('AppConfig', () => {
 
     describe('with inline content', () => {
       const stack = buildCdkStack();
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
       const profile = buildHostedProfile(stack, { application });
 
       new appconfig.HostedConfigurationVersion(stack, 'MyConfigVersion', {
@@ -142,7 +142,7 @@ describe('AppConfig', () => {
 
     describe('with asset content', () => {
       const stack = buildCdkStack();
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
       const profile = buildHostedProfile(stack, { application });
 
       new appconfig.HostedConfigurationVersion(stack, 'MyConfigVersion', {
@@ -188,7 +188,7 @@ describe('AppConfig', () => {
 
     describe('with bucket content', () => {
       const stack = buildCdkStack();
-      const application = buildApplication(stack);
+      const application = buildApplication(stack, 'MyApplication');
       const profile = buildHostedProfile(stack, { application });
 
       const configBucket = s3.Bucket.fromBucketName(stack, 'ConfigBucket', 'my-config-bucket');

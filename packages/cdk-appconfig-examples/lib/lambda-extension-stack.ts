@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as appconfig from '@cuperman/cdk-appconfig';
-import * as iam from '@aws-cdk/aws-iam';
 
 const HELLO_WORLD_CODE_PATH = path.join(
   path.dirname(require.resolve('@cuperman/cdk-appconfig-handler-hello-world/package.json')),
@@ -73,18 +72,7 @@ export class LambdaExtensionStack extends cdk.Stack {
       }
     });
 
-    // todo: make dynamic
-    helloWorldFunction.addToRolePolicy(
-      new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['appconfig:GetConfiguration'],
-        resources: [
-          // TODO: make dynamic
-          `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${application.applicationId}`,
-          `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${application.applicationId}/environment/${environment.environmentId}`,
-          `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${application.applicationId}/configurationprofile/${configuration.configurationProfileId}`
-        ]
-      })
-    );
+    // allow lambda function to get configurations from appconfig
+    configuration.grantGetConfiguration(helloWorldFunction, environment);
   }
 }

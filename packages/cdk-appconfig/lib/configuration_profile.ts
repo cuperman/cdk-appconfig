@@ -1,8 +1,10 @@
 import * as cdk from '@aws-cdk/core';
 import * as appconfig from '@aws-cdk/aws-appconfig';
 import * as s3 from '@aws-cdk/aws-s3';
+import * as iam from '@aws-cdk/aws-iam';
 
 import { IApplication } from './application';
+import { IEnvironment } from './environment';
 import { Validator } from './validator';
 
 export interface IConfigurationProfile extends cdk.IResource {
@@ -22,6 +24,7 @@ export interface ConfigurationProfileProps extends ConfigurationProfileBaseProps
 }
 
 export class ConfigurationProfile extends cdk.Resource implements IConfigurationProfile, cdk.ITaggable {
+  public readonly application: IApplication;
   public readonly configurationProfileId: string;
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnConfigurationProfile;
@@ -31,12 +34,13 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
 
     const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.RETAIN;
 
+    this.application = props.application;
     this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::ConfigurationProfile');
 
     const validatorConfigs = props.validators?.map((validator) => validator.bind(this));
 
     this.resource = new appconfig.CfnConfigurationProfile(this, 'Resource', {
-      applicationId: props.application.applicationId,
+      applicationId: this.application.applicationId,
       name: props.name || cdk.Names.uniqueId(this),
       description: props.description,
       locationUri: props.locationUri,
@@ -50,6 +54,21 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
 
   protected prepare() {
     this.resource.tags = this.tags.renderTags();
+  }
+
+  public grantGetConfiguration(grantee: iam.IGrantable, environment?: IEnvironment): iam.Grant {
+    // allow all environments by default
+    const environments = environment ? environment.environmentId : '*';
+
+    return iam.Grant.addToPrincipal({
+      grantee,
+      actions: ['appconfig:GetConfiguration'],
+      resourceArns: [
+        `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${this.application.applicationId}`,
+        `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${this.application.applicationId}/environment/${environments}`,
+        `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${this.application.applicationId}/configurationprofile/${this.configurationProfileId}`
+      ]
+    });
   }
 }
 

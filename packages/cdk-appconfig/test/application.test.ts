@@ -68,7 +68,7 @@ describe('AppConfig', () => {
         tags: { Foo: 'Bar', Kanye: 'West' }
       });
 
-      buildApplication(stack);
+      buildApplication(stack, 'MyApplication');
 
       it('applies tags', () => {
         expectCDK(stack).to(
