@@ -56,10 +56,9 @@ export class LambdaExtensionStack extends cdk.Stack {
         AWS_APPCONFIG_EXTENSION_POLL_INTERVAL_SECONDS: '45', // default: 45 seconds
         AWS_APPCONFIG_EXTENSION_POLL_TIMEOUT_MILLIS: '3000', // default: 3000 milliseconds
         AWS_APPCONFIG_EXTENSION_HTTP_PORT: '2772', // default: 2772
-        // APPCONFIG_APPLICATION_ID: application.applicationId,
-        // APPCONFIG_ENVIRONMENT_ID: environment.environmentId,
-        // APPCONFIG_CONFIGURATION_PROFILE_ID: configuration.configurationProfileId,
-        AWS_APPCONFIG_EXTENSION_HTTP_URL: `http://localhost:2772/applications/${application.applicationId}/environments/${environment.environmentId}/configurations/${configuration.configurationProfileId}`
+        AWS_APPCONFIG_APPLICATION_ID: application.applicationId,
+        AWS_APPCONFIG_ENVIRONMENT_ID: environment.environmentId,
+        AWS_APPCONFIG_CONFIGURATION_PROFILE_ID: configuration.configurationProfileId
       }
     });
 

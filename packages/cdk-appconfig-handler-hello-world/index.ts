@@ -5,6 +5,17 @@
 
 import * as http from 'http';
 
+function requireEnvironmentVariable(name: string, defaultValue?: string): string {
+  const value = process.env[name];
+  if (typeof value !== 'undefined') {
+    return value;
+  } else if (typeof defaultValue !== 'undefined') {
+    return defaultValue;
+  }
+
+  throw new Error(`Environment variable "${name}" required`);
+}
+
 async function fetch(url: string): Promise<string> {
   return new Promise((resolve, reject) => {
     http
@@ -26,10 +37,12 @@ async function fetch(url: string): Promise<string> {
 }
 
 async function getConfiguredNumberOf(configurationType: string, defaultValue: number): Promise<number> {
-  const url = process.env.AWS_APPCONFIG_EXTENSION_HTTP_URL;
-  if (typeof url === 'undefined') {
-    throw new Error('Environment variable "AWS_APPCONFIG_EXTENSION_HTTP_URL" required');
-  }
+  const applicationId = requireEnvironmentVariable('AWS_APPCONFIG_APPLICATION_ID');
+  const environmentId = requireEnvironmentVariable('AWS_APPCONFIG_ENVIRONMENT_ID');
+  const configurationProfileId = requireEnvironmentVariable('AWS_APPCONFIG_CONFIGURATION_PROFILE_ID');
+  const httpPort = requireEnvironmentVariable('AWS_APPCONFIG_EXTENSION_HTTP_PORT', '2772');
+
+  const url = `http://localhost:${httpPort}/applications/${applicationId}/environments/${environmentId}/configurations/${configurationProfileId}`;
 
   try {
     const json = await fetch(url);
