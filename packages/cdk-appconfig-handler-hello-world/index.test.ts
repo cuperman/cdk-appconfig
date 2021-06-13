@@ -2,9 +2,6 @@ import * as nock from 'nock';
 import { URL } from 'url';
 import * as index from './index';
 
-const APPCONFIG_URL =
-  'http://localhost:2772/applications/helloworld/environments/demo/configurations/ExclamationPoints';
-
 function mockResponse(urlString: string, respObject: any) {
   const url = new URL(urlString);
   nock(`${url.protocol}//${url.host}`).get(url.pathname).reply(200, respObject);
@@ -16,7 +13,9 @@ describe('index', () => {
     const context = {};
 
     beforeEach(() => {
-      process.env.AWS_APPCONFIG_EXTENSION_HTTP_URL = APPCONFIG_URL;
+      process.env.AWS_APPCONFIG_APPLICATION_ID = 'helloworld';
+      process.env.AWS_APPCONFIG_ENVIRONMENT_ID = 'demo';
+      process.env.AWS_APPCONFIG_CONFIGURATION_PROFILE_ID = 'ExclamationPoints';
     });
 
     afterEach(() => {
@@ -25,10 +24,13 @@ describe('index', () => {
 
     describe('when feature enabled', () => {
       beforeEach(() => {
-        mockResponse(APPCONFIG_URL, {
-          enableExclamationPoints: true,
-          numberOfExclamationPoints: 5
-        });
+        mockResponse(
+          'http://localhost:2772/applications/helloworld/environments/demo/configurations/ExclamationPoints',
+          {
+            enableExclamationPoints: true,
+            numberOfExclamationPoints: 5
+          }
+        );
       });
 
       it('returns variable number of exclamation points', async () => {
@@ -39,10 +41,13 @@ describe('index', () => {
 
     describe('when feature disabled', () => {
       beforeEach(() => {
-        mockResponse(APPCONFIG_URL, {
-          enableExclamationPoints: false,
-          numberOfExclamationPoints: 5
-        });
+        mockResponse(
+          'http://localhost:2772/applications/helloworld/environments/demo/configurations/ExclamationPoints',
+          {
+            enableExclamationPoints: false,
+            numberOfExclamationPoints: 5
+          }
+        );
       });
 
       it('returns a single exclamation point', async () => {
@@ -53,9 +58,12 @@ describe('index', () => {
 
     describe('when misconfigured', () => {
       beforeEach(() => {
-        mockResponse(APPCONFIG_URL, {
-          foo: 'bar'
-        });
+        mockResponse(
+          'http://localhost:2772/applications/helloworld/environments/demo/configurations/ExclamationPoints',
+          {
+            foo: 'bar'
+          }
+        );
       });
 
       it('returns a single exclamation point', async () => {
