@@ -47,7 +47,7 @@ const configProfile = new appconfig.S3ConfigurationProfile(
 
 ### Hosted Configurations
 
-Using hosted configurations, configuration content can be managed with hosted configuration versions. Hosted configuration versions support plain text, json, or yaml formats, specified with ContentType. The CVontent of the configuration version can be defined inline, uploaded as a CDK asset, or imported from an S3 bucket.
+Using hosted configurations, configuration content can be managed with hosted configuration versions. Hosted configuration versions support plain text, json, or yaml formats, specified with ContentType. The Content of the configuration version can be defined inline, uploaded as a CDK asset, or imported from an S3 bucket.
 
 Content type:
 
