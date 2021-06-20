@@ -6,6 +6,7 @@ import * as path from 'path';
 
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
+import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
 import * as appconfig from '@cuperman/cdk-appconfig';
 
 const HELLO_WORLD_CODE_PATH = path.join(
@@ -60,9 +61,9 @@ export class LambdaExtensionStack extends cdk.Stack {
         AWS_APPCONFIG_EXTENSION_POLL_INTERVAL_SECONDS: '45', // default: 45 seconds
         AWS_APPCONFIG_EXTENSION_POLL_TIMEOUT_MILLIS: '3000', // default: 3000 milliseconds
         AWS_APPCONFIG_EXTENSION_HTTP_PORT: '2772', // default: 2772
-        AWS_APPCONFIG_APPLICATION_ID: application.applicationId,
-        AWS_APPCONFIG_ENVIRONMENT_ID: environment.environmentId,
-        AWS_APPCONFIG_CONFIGURATION_PROFILE_ID: configuration.configurationProfileId
+        AWS_APPCONFIG_APPLICATION_NAME: application.applicationName,
+        AWS_APPCONFIG_ENVIRONMENT_NAME: environment.environmentName,
+        AWS_APPCONFIG_CONFIGURATION_PROFILE_NAME: configuration.configurationProfileName
       }
     });
 
@@ -70,6 +71,15 @@ export class LambdaExtensionStack extends cdk.Stack {
     helloWorldFunction.addLayers(new appconfig.LambdaExtensionLayer(this, 'AppConfigLambdaExtension'));
 
     // allow lambda function to get configurations from appconfig
-    configuration.grantGetConfiguration(helloWorldFunction, environment);
+    configuration.grantGetConfiguration(helloWorldFunction);
+
+    // roll back on lambda errors
+    environment.addAlarm(
+      new cloudwatch.Alarm(this, 'HelloWorldErrors', {
+        threshold: 1,
+        evaluationPeriods: 1,
+        metric: helloWorldFunction.metricErrors()
+      })
+    );
   }
 }

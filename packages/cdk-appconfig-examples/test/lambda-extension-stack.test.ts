@@ -1,8 +1,8 @@
-import { expect as expectCDK, haveResource, haveResourceLike } from '@aws-cdk/assert';
+import { anything, expect as expectCDK, haveResource, haveResourceLike } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
 import { LambdaExtensionStack } from '../lib';
 
-describe('CdkExamplesStack', () => {
+describe('LambdaExtensionStack', () => {
   const app = new cdk.App();
   const stack = new LambdaExtensionStack(app, 'MyLambdaExtensionExample');
 
@@ -47,6 +47,23 @@ describe('CdkExamplesStack', () => {
             }
           ]
         }
+      })
+    );
+  });
+
+  it('has an alarm that triggers on lambda errors', () => {
+    expectCDK(stack).to(
+      haveResource('AWS::CloudWatch::Alarm', {
+        Namespace: 'AWS/Lambda',
+        MetricName: 'Errors',
+        Dimensions: [
+          {
+            Name: 'FunctionName',
+            Value: {
+              Ref: anything()
+            }
+          }
+        ]
       })
     );
   });

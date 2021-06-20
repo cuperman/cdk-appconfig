@@ -28,6 +28,10 @@ describe('AppConfig', () => {
           expect(typeof profile.configurationProfileId).toEqual('string');
         });
 
+        it('has a configuration profile name', () => {
+          expect(typeof profile.configurationProfileName).toEqual('string');
+        });
+
         it('creates a configuration profile resource with required properties', () => {
           expectCDK(stack).to(
             haveResource('AWS::AppConfig::ConfigurationProfile', {
@@ -58,12 +62,16 @@ describe('AppConfig', () => {
         const stack = buildCdkStack();
         const application = buildApplication(stack, 'MyApplication');
 
-        new ConfigurationProfile(stack, 'MyProfile', {
+        const profile = new ConfigurationProfile(stack, 'MyProfile', {
           application,
           name: 'MyProfile',
           locationUri: 'hosted',
           description: 'My configuration profile',
           removalPolicy: cdk.RemovalPolicy.DESTROY
+        });
+
+        it('has a specific configuration profile name', () => {
+          expect(profile.configurationProfileName).toEqual('MyProfile');
         });
 
         it('creates a configuration profile resource with optional properties', () => {

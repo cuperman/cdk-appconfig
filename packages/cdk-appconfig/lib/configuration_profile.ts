@@ -26,6 +26,7 @@ export interface ConfigurationProfileProps extends ConfigurationProfileBaseProps
 export class ConfigurationProfile extends cdk.Resource implements IConfigurationProfile, cdk.ITaggable {
   public readonly application: IApplication;
   public readonly configurationProfileId: string;
+  public readonly configurationProfileName: string;
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnConfigurationProfile;
 
@@ -50,6 +51,7 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
     this.resource.applyRemovalPolicy(props.removalPolicy || DEFAULT_REMOVAL_POLICY);
 
     this.configurationProfileId = this.resource.ref;
+    this.configurationProfileName = this.resource.name;
   }
 
   protected prepare() {

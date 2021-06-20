@@ -36,12 +36,12 @@ async function fetch(url: string): Promise<string> {
 }
 
 async function getConfiguredNumberOf(configurationType: string, defaultValue: number): Promise<number> {
-  const applicationId = requireEnvironmentVariable('AWS_APPCONFIG_APPLICATION_ID');
-  const environmentId = requireEnvironmentVariable('AWS_APPCONFIG_ENVIRONMENT_ID');
-  const configurationProfileId = requireEnvironmentVariable('AWS_APPCONFIG_CONFIGURATION_PROFILE_ID');
+  const applicationName = requireEnvironmentVariable('AWS_APPCONFIG_APPLICATION_NAME');
+  const environmentName = requireEnvironmentVariable('AWS_APPCONFIG_ENVIRONMENT_NAME');
+  const configurationProfileName = requireEnvironmentVariable('AWS_APPCONFIG_CONFIGURATION_PROFILE_NAME');
   const httpPort = requireEnvironmentVariable('AWS_APPCONFIG_EXTENSION_HTTP_PORT', '2772');
 
-  const url = `http://localhost:${httpPort}/applications/${applicationId}/environments/${environmentId}/configurations/${configurationProfileId}`;
+  const url = `http://localhost:${httpPort}/applications/${applicationName}/environments/${environmentName}/configurations/${configurationProfileName}`;
 
   try {
     const json = await fetch(url);

@@ -13,9 +13,9 @@ describe('index', () => {
     const context = {};
 
     beforeEach(() => {
-      process.env.AWS_APPCONFIG_APPLICATION_ID = 'helloworld';
-      process.env.AWS_APPCONFIG_ENVIRONMENT_ID = 'demo';
-      process.env.AWS_APPCONFIG_CONFIGURATION_PROFILE_ID = 'ExclamationPoints';
+      process.env.AWS_APPCONFIG_APPLICATION_NAME = 'helloworld';
+      process.env.AWS_APPCONFIG_ENVIRONMENT_NAME = 'demo';
+      process.env.AWS_APPCONFIG_CONFIGURATION_PROFILE_NAME = 'ExclamationPoints';
     });
 
     afterEach(() => {

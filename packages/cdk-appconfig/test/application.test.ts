@@ -14,6 +14,10 @@ describe('AppConfig', () => {
         expect(typeof application.applicationId).toEqual('string');
       });
 
+      it('has an application name', () => {
+        expect(typeof application.applicationName).toEqual('string');
+      });
+
       it('creates an application resource with required properties', () => {
         expectCDK(stack).to(
           haveResource('AWS::AppConfig::Application', {
@@ -39,10 +43,14 @@ describe('AppConfig', () => {
     describe('with optional props', () => {
       const stack = buildCdkStack();
 
-      new Application(stack, 'MyApplication', {
+      const application = new Application(stack, 'MyApplication', {
         name: 'MyApp',
         description: 'My application',
         removalPolicy: cdk.RemovalPolicy.DESTROY
+      });
+
+      it('has a specific application name', () => {
+        expect(application.applicationName).toEqual('MyApp');
       });
 
       it('creates an application resource with optional properties', () => {

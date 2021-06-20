@@ -62,7 +62,7 @@
     "@aws-cdk/cx-api" "1.108.1"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-cloudwatch@1.108.1":
+"@aws-cdk/aws-cloudwatch@1.108.1", "@aws-cdk/aws-cloudwatch@^1.108.1":
   version "1.108.1"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-cloudwatch/-/aws-cloudwatch-1.108.1.tgz#49169a32bda0376bb6820aa561b394aafdaf3603"
   integrity sha512-Qm4Pf8YcrM5XmGW/YyS9CKuoYT254Ffch7axF4W6swC6XUb6Vg5umYji8yWLmlT4EwQzd4EBdHZkjX9ezWP70g==
