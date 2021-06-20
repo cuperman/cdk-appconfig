@@ -13,6 +13,7 @@ export interface ApplicationProps {
 
 export class Application extends cdk.Resource implements IApplication, cdk.ITaggable {
   public readonly applicationId: string;
+  public readonly applicationName: string;
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnApplication;
 
@@ -31,6 +32,7 @@ export class Application extends cdk.Resource implements IApplication, cdk.ITagg
     this.resource.applyRemovalPolicy(props?.removalPolicy || DEFAULT_REMOVAL_POLICY);
 
     this.applicationId = this.resource.ref;
+    this.applicationName = this.resource.name;
   }
 
   protected prepare() {

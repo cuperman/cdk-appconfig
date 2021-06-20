@@ -2,7 +2,7 @@ import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
 import { HostedConfigurationStack } from '../lib';
 
-describe('CdkExamplesStack', () => {
+describe('HostedConfigurationStack', () => {
   const app = new cdk.App();
   const stack = new HostedConfigurationStack(app, 'MyHostedConfigExample');
 
