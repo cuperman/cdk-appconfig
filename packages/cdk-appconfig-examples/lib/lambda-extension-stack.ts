@@ -6,7 +6,6 @@ import * as path from 'path';
 
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
 import * as appconfig from '@cuperman/cdk-appconfig';
 
 const HELLO_WORLD_CODE_PATH = path.join(
@@ -75,10 +74,9 @@ export class LambdaExtensionStack extends cdk.Stack {
 
     // roll back on lambda errors
     environment.addAlarm(
-      new cloudwatch.Alarm(this, 'HelloWorldErrors', {
+      helloWorldFunction.metricErrors().createAlarm(this, 'HelloWorldErrors', {
         threshold: 1,
-        evaluationPeriods: 1,
-        metric: helloWorldFunction.metricErrors()
+        evaluationPeriods: 1
       })
     );
   }
