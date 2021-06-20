@@ -34,11 +34,15 @@ const configBucket = new s3.Bucket(this, 'ConfigBucket');
 
 const app = new appconfig.Application(this, 'App');
 
-const configProfile = new appconfig.S3ConfigurationProfile(this, 'ConfigProfile', {
-  application: app,
-  s3Bucket: configBucket,
-  s3ObjectKey: 'path/to/config.json'
-});
+const configProfile = new appconfig.S3ConfigurationProfile(
+  this,
+  'ConfigProfile',
+  {
+    application: app,
+    s3Bucket: configBucket,
+    s3ObjectKey: 'path/to/config.json'
+  }
+);
 ```
 
 ### Hosted Configurations
@@ -64,9 +68,13 @@ import * as appconfig from '@cuperman/cdk-appconfig';
 
 const app = new appconfig.Application(this, 'App');
 
-const configProfile = new appconfig.HostedConfigurationProfile(this, 'ConfigProfile', {
-  application: app
-});
+const configProfile = new appconfig.HostedConfigurationProfile(
+  this,
+  'ConfigProfile',
+  {
+    application: app
+  }
+);
 
 new appconfig.HostedConfigurationVersion(this, 'ConfigVersion', {
   application: app,
@@ -158,12 +166,16 @@ const configVersion = new appconfig.HostedConfigurationVersion( ... );
 
 const prodEnv = new appconfig.Environment(this, 'ProdEnv');
 
-const exponentialStrategy = new appconfig.DeploymentStrategy(this, 'ExponentialStrategy', {
-  growthType: appconfig.DeploymentStrategyGrowthType.EXPONENTIAL,
-  growthFactor: 2,
-  deploymentDurationInMinutes: 10,
-  finalBakeTimeInMinutes: 0
-});
+const exponentialStrategy = new appconfig.DeploymentStrategy(
+  this,
+  'ExponentialStrategy',
+  {
+    growthType: appconfig.DeploymentStrategyGrowthType.EXPONENTIAL,
+    growthFactor: 2,
+    deploymentDurationInMinutes: 10,
+    finalBakeTimeInMinutes: 0
+  }
+);
 
 new appconfig.Deployment(this, 'Deployment', {
   application: app,
@@ -192,9 +204,30 @@ new appconfig.Deployment(this, 'Deployment', {
 });
 ```
 
-### Monitors
+### Alarms
 
-_coming soon_
+Add alarms to your environment to automatically roll back configurations when unexpected issues occur.
+
+```ts
+const app = new appconfig.Application( ... );
+const env = new appconfig.Environment( ... );
+const config = new appconfig.HostedConfigurationProfile( ... );
+
+// example lambda function that gets configuration from appconfig
+const fn = new lambda.Function( ... );
+
+// create an alarm from the lambda metric, and add it to the environment
+env.addAlarm(
+  fn.metricErrors().createAlarm(this, 'FnErrorAlarm', {
+    threshold: 100,
+    evaluationPeriods: 2
+  });
+);
+
+// grant lambda function getConfiguration access in all environments to avoid
+// circular dependencies
+config.grantGetConfiguration(fn);
+```
 
 ### Lambda Extensions
 
@@ -208,10 +241,12 @@ const config = new appconfig.HostedConfigurationProfile( ... );
 const fn = new lambda.Function( ... );
 
 // add the lambda extension layer
-fn.addLayers(new appconfig.LambdaExtensionLayer(this, 'AppConfigLambdaExtension'));
+fn.addLayers(
+  new appconfig.LambdaExtensionLayer(this, 'AppConfigLambdaExtension')
+);
 
 // grant access to get configurations
-configuration.grantGetConfiguration(fn, env);
+config.grantGetConfiguration(fn, env);
 ```
 
 For more info on AppConfig lambda extensions, see [https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html](https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-integration-lambda-extensions.html)
