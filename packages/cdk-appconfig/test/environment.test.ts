@@ -1,9 +1,16 @@
-import { expect as expectCDK, haveResource, haveResourceLike, anything, ResourcePart } from '@aws-cdk/assert';
+import {
+  expect as expectCDK,
+  haveResource,
+  haveResourceLike,
+  anything,
+  ResourcePart,
+  countResources
+} from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
 
-import { buildCdkStack, buildApplication, buildAlarm } from './helpers';
+import { buildCdkStack, buildApplication, buildAlarm, buildHostedProfile, buildDeploymentStrategy } from './helpers';
 import { Environment } from '../lib';
 
 describe('AppConfig', () => {
@@ -184,6 +191,52 @@ describe('AppConfig', () => {
               }
             ]
           })
+        );
+      });
+    });
+
+    describe('addDeployment', () => {
+      const stack = buildCdkStack();
+      const application = buildApplication(stack, 'MyApplication');
+      const profile = buildHostedProfile(stack, {
+        application
+      });
+      const strategy = buildDeploymentStrategy(stack);
+
+      const environment = new Environment(stack, 'MyEnvironment', {
+        application
+      });
+
+      environment.addDeployment({
+        configurationProfile: profile,
+        configurationVersionNumber: '1',
+        deploymentStrategy: strategy
+      });
+
+      it('creates a deployment', () => {
+        expectCDK(stack).to(
+          haveResource('AWS::AppConfig::Deployment', {
+            ConfigurationVersion: '1'
+          })
+        );
+      });
+
+      it('creates a dependency on any previous deployments', () => {
+        environment.addDeployment({
+          configurationProfile: profile,
+          configurationVersionNumber: '2',
+          deploymentStrategy: strategy
+        });
+
+        expectCDK(stack).to(countResources('AWS::AppConfig::Deployment', 2));
+        expectCDK(stack).to(
+          haveResource(
+            'AWS::AppConfig::Deployment',
+            {
+              DependsOn: [anything()]
+            },
+            ResourcePart.CompleteDefinition
+          )
         );
       });
     });

@@ -6,6 +6,10 @@ import { IConfigurationProfile } from './configuration_profile';
 import { IDeploymentStrategy } from './deployment_strategy';
 import { IEnvironment } from './environment';
 
+export interface IDeployment extends cdk.IResource {
+  readonly deploymentId: string;
+}
+
 export interface DeploymentProps {
   readonly application: IApplication;
   readonly configurationProfile: IConfigurationProfile;
@@ -15,7 +19,8 @@ export interface DeploymentProps {
   readonly description?: string;
 }
 
-export class Deployment extends cdk.Resource {
+export class Deployment extends cdk.Resource implements IDeployment, cdk.ITaggable {
+  public readonly deploymentId: string;
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnDeployment;
 
@@ -32,6 +37,8 @@ export class Deployment extends cdk.Resource {
       deploymentStrategyId: props.deploymentStrategy.deploymentStrategyId,
       description: props.description
     });
+
+    this.deploymentId = this.resource.ref;
   }
 
   protected prepare() {

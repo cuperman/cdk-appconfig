@@ -4,6 +4,9 @@ import * as iam from '@aws-cdk/aws-iam';
 import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
 
 import { IApplication } from './application';
+import { IConfigurationProfile } from './configuration_profile';
+import { IDeploymentStrategy } from './deployment_strategy';
+import { IDeployment, Deployment } from './deployment';
 
 export interface IEnvironment extends cdk.IResource {
   readonly environmentId: string;
@@ -17,10 +20,19 @@ export interface EnvironmentProps {
   readonly removalPolicy?: cdk.RemovalPolicy;
 }
 
+export interface EnvironmentDeploymentProps {
+  readonly configurationProfile: IConfigurationProfile;
+  readonly configurationVersionNumber: string;
+  readonly deploymentStrategy: IDeploymentStrategy;
+  readonly description?: string;
+}
+
 export class Environment extends cdk.Resource implements IEnvironment, cdk.ITaggable {
+  public readonly application: IApplication;
   public readonly environmentId: string;
   public readonly environmentName: string;
   public readonly alarms: cloudwatch.IAlarm[];
+  public readonly deployments: IDeployment[];
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnEnvironment;
   private alarmRole?: iam.IRole;
@@ -30,13 +42,16 @@ export class Environment extends cdk.Resource implements IEnvironment, cdk.ITagg
 
     const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.DESTROY;
 
+    this.application = props.application;
+
     this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::Environment');
 
+    this.deployments = [];
     this.alarms = [];
     props.alarms?.forEach((alarm) => this.alarms.push(alarm));
 
     this.resource = new appconfig.CfnEnvironment(this, 'Resource', {
-      applicationId: props.application.applicationId,
+      applicationId: this.application.applicationId,
       name: props.name || cdk.Names.uniqueId(this),
       description: props.description
     });
@@ -76,5 +91,27 @@ export class Environment extends cdk.Resource implements IEnvironment, cdk.ITagg
 
   addAlarm(alarm: cloudwatch.IAlarm) {
     this.alarms.push(alarm);
+  }
+
+  addDeployment(props: EnvironmentDeploymentProps): IDeployment {
+    const counter = this.deployments.length + 1;
+
+    const deployment = new Deployment(this, `Deployment${counter}`, {
+      application: this.application,
+      environment: this,
+      configurationProfile: props.configurationProfile,
+      configurationVersionNumber: props.configurationVersionNumber,
+      deploymentStrategy: props.deploymentStrategy,
+      description: props.description
+    });
+
+    // add dependency on previous deployment to prevent concurrent deployments
+    if (this.deployments.length > 0) {
+      deployment.node.addDependency(this.deployments[this.deployments.length - 1]);
+    }
+
+    this.deployments.push(deployment);
+
+    return deployment;
   }
 }

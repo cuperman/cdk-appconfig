@@ -177,11 +177,9 @@ const exponentialStrategy = new appconfig.DeploymentStrategy(
   }
 );
 
-new appconfig.Deployment(this, 'Deployment', {
-  application: app,
+prodEnv.addDeployment({
   configurationProfile: configProfile,
   configurationVersionNumber: configVersion.versionNumber,
-  environment: prodEnv,
   deploymentStrategy: exponentialStrategy
 });
 ```
@@ -193,16 +191,16 @@ Deployment strategies are global (not defined within your Application scope), so
 Example using a predefined deployment strategy:
 
 ```ts
-new appconfig.Deployment(this, 'Deployment', {
-  application: app,
+prodEnv.addDeployment({
   configurationProfile: configProfile,
   configurationVersionNumber: configVersion.versionNumber,
-  environment: prodEnv,
   deploymentStrategy: appconfig.DeploymentStrategy.fromDeploymentStrategyId(
     appconfig.PredefinedDeploymentStrategy.LINEAR_50_PERCENT_EVERY_30_SECONDS
   )
 });
 ```
+
+The `Environment.addDeployment` method implicitly creates dependencies for each deployment to ensure they run in order, serially.  Only one Deployment can run concurrently per Environment in AppConfig.
 
 ### Alarms
 
