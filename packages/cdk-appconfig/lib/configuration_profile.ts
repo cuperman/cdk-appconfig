@@ -9,6 +9,7 @@ import { Validator } from './validator';
 
 export interface IConfigurationProfile extends cdk.IResource {
   readonly configurationProfileId: string;
+  readonly configurationProfileArn: string;
 }
 
 export interface ConfigurationProfileBaseProps {
@@ -27,6 +28,7 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
   public readonly application: IApplication;
   public readonly configurationProfileId: string;
   public readonly configurationProfileName: string;
+  public readonly configurationProfileArn: string;
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnConfigurationProfile;
 
@@ -52,6 +54,7 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
 
     this.configurationProfileId = this.resource.ref;
     this.configurationProfileName = this.resource.name;
+    this.configurationProfileArn = `${this.application.applicationArn}/configurationprofile/${this.configurationProfileId}`;
   }
 
   protected prepare() {
@@ -66,9 +69,9 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
       grantee,
       actions: ['appconfig:GetConfiguration'],
       resourceArns: [
-        `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${this.application.applicationId}`,
-        `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${this.application.applicationId}/environment/${environments}`,
-        `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${this.application.applicationId}/configurationprofile/${this.configurationProfileId}`
+        this.application.applicationArn,
+        `${this.application.applicationArn}/environment/${environments}`,
+        this.configurationProfileArn
       ]
     });
   }

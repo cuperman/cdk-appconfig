@@ -3,6 +3,7 @@ import * as appconfig from '@aws-cdk/aws-appconfig';
 
 export interface IApplication extends cdk.IResource {
   readonly applicationId: string;
+  readonly applicationArn: string;
 }
 
 export interface ApplicationProps {
@@ -13,6 +14,7 @@ export interface ApplicationProps {
 
 export class Application extends cdk.Resource implements IApplication, cdk.ITaggable {
   public readonly applicationId: string;
+  public readonly applicationArn: string;
   public readonly applicationName: string;
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnApplication;
@@ -33,6 +35,7 @@ export class Application extends cdk.Resource implements IApplication, cdk.ITagg
 
     this.applicationId = this.resource.ref;
     this.applicationName = this.resource.name;
+    this.applicationArn = `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${this.applicationId}`;
   }
 
   protected prepare() {

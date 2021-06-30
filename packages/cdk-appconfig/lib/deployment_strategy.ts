@@ -3,14 +3,17 @@ import * as appconfig from '@aws-cdk/aws-appconfig';
 
 export interface IDeploymentStrategy extends cdk.IResource {
   readonly deploymentStrategyId: string;
+  readonly deploymentStrategyArn: string;
 }
 
 export class ImportedDeploymentStrategy extends cdk.Resource implements IDeploymentStrategy {
   public readonly deploymentStrategyId: string;
+  public readonly deploymentStrategyArn: string;
 
   constructor(scope: cdk.Construct, id: string, deploymentStrategyId: string) {
     super(scope, id);
     this.deploymentStrategyId = deploymentStrategyId;
+    this.deploymentStrategyArn = `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:deploymentstrategy/${this.deploymentStrategyId}`;
   }
 }
 
@@ -43,6 +46,8 @@ export interface DeploymentStrategyProps {
 
 export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrategy {
   public readonly deploymentStrategyId: string;
+  public readonly deploymentStrategyName: string;
+  public readonly deploymentStrategyArn: string;
   public readonly tags: cdk.TagManager;
   private readonly resource: appconfig.CfnDeploymentStrategy;
 
@@ -67,6 +72,8 @@ export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrat
     this.resource.applyRemovalPolicy(props.removalPolicy || DEFAULT_REMOVAL_POLICY);
 
     this.deploymentStrategyId = this.resource.ref;
+    this.deploymentStrategyName = this.resource.name;
+    this.deploymentStrategyArn = `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:deploymentstrategy/${this.deploymentStrategyId}`;
   }
 
   public static fromDeploymentStrategyId(

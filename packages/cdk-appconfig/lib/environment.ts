@@ -10,6 +10,7 @@ import { IDeployment, Deployment } from './deployment';
 
 export interface IEnvironment extends cdk.IResource {
   readonly environmentId: string;
+  readonly environmentArn: string;
 }
 
 export interface EnvironmentProps {
@@ -31,6 +32,7 @@ export class Environment extends cdk.Resource implements IEnvironment, cdk.ITagg
   public readonly application: IApplication;
   public readonly environmentId: string;
   public readonly environmentName: string;
+  public readonly environmentArn: string;
   public readonly alarms: cloudwatch.IAlarm[];
   public readonly deployments: IDeployment[];
   public readonly tags: cdk.TagManager;
@@ -60,6 +62,7 @@ export class Environment extends cdk.Resource implements IEnvironment, cdk.ITagg
 
     this.environmentId = this.resource.ref;
     this.environmentName = this.resource.name;
+    this.environmentArn = `${this.application.applicationArn}/environment/${this.environmentId}`;
   }
 
   protected prepare() {

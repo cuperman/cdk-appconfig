@@ -31,6 +31,10 @@ describe('AppConfig', () => {
         expect(typeof environment.environmentName).toEqual('string');
       });
 
+      it('has an environment arn', () => {
+        expect(typeof environment.environmentArn).toEqual('string');
+      });
+
       it('creates an environment resource with required properties', () => {
         expectCDK(stack).to(
           haveResource('AWS::AppConfig::Environment', {

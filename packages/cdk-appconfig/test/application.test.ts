@@ -18,6 +18,10 @@ describe('AppConfig', () => {
         expect(typeof application.applicationName).toEqual('string');
       });
 
+      it('has an application arn', () => {
+        expect(typeof application.applicationArn).toEqual('string');
+      });
+
       it('creates an application resource with required properties', () => {
         expectCDK(stack).to(
           haveResource('AWS::AppConfig::Application', {

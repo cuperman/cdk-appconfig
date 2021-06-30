@@ -32,6 +32,10 @@ describe('AppConfig', () => {
           expect(typeof profile.configurationProfileName).toEqual('string');
         });
 
+        it('has a configuration profile arn', () => {
+          expect(typeof profile.configurationProfileArn).toEqual('string');
+        });
+
         it('creates a configuration profile resource with required properties', () => {
           expectCDK(stack).to(
             haveResource('AWS::AppConfig::ConfigurationProfile', {

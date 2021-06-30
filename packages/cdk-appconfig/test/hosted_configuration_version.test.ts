@@ -25,6 +25,10 @@ describe('AppConfig', () => {
         expect(typeof configVersion.versionNumber).toEqual('string');
       });
 
+      it('has a hosted configuration version arn', () => {
+        expect(typeof configVersion.hostedConfigurationVersionArn).toEqual('string');
+      });
+
       it('creates a hosted configuration version resource with required properties', () => {
         expectCDK(stack).to(
           haveResource('Custom::HostedConfigurationVersion', {

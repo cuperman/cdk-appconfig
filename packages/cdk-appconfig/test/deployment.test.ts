@@ -17,12 +17,20 @@ describe('AppConfig', () => {
       const environment = buildEnvironment(stack, 'MyEnvironment', { application });
       const deploymentStrategy = buildDeploymentStrategy(stack);
 
-      new appconfig.Deployment(stack, 'MyDeployment', {
+      const deployment = new appconfig.Deployment(stack, 'MyDeployment', {
         application,
         configurationProfile,
         configurationVersionNumber: '1',
         environment,
         deploymentStrategy
+      });
+
+      it('has a deployment id', () => {
+        expect(typeof deployment.deploymentId).toEqual('string');
+      });
+
+      it('has a deployment arn', () => {
+        expect(typeof deployment.deploymentArn).toEqual('string');
       });
 
       it('creates a deployment with required properties', () => {

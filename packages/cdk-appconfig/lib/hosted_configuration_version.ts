@@ -26,6 +26,7 @@ function uppercaseProperties(props: { [key: string]: any }): { [key: string]: an
 
 export interface IHostedConfigurationVersion {
   readonly versionNumber: string;
+  readonly hostedConfigurationVersionArn: string;
 }
 
 export interface HostedConfigurationVersionProps {
@@ -40,12 +41,18 @@ export interface HostedConfigurationVersionProps {
 }
 
 export class HostedConfigurationVersion extends cdk.Resource implements IHostedConfigurationVersion {
+  public readonly application: IApplication;
+  public readonly configurationProfile: IConfigurationProfile;
   public readonly versionNumber: string;
+  public readonly hostedConfigurationVersionArn: string;
 
   constructor(scope: cdk.Construct, id: string, props: HostedConfigurationVersionProps) {
     super(scope, id);
 
     const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.RETAIN;
+
+    this.application = props.application;
+    this.configurationProfile = props.configurationProfile;
 
     const contentConfig = props.content.bind(this);
 
@@ -84,8 +91,8 @@ export class HostedConfigurationVersion extends cdk.Resource implements IHostedC
       serviceToken: provider.serviceToken,
       pascalCaseProperties: true,
       properties: {
-        applicationId: props.application.applicationId,
-        configurationProfileId: props.configurationProfile.configurationProfileId,
+        applicationId: this.application.applicationId,
+        configurationProfileId: this.configurationProfile.configurationProfileId,
         contentType: props.contentType,
         contentConfig: uppercaseProperties(contentConfig),
         description: props.description,
@@ -96,5 +103,6 @@ export class HostedConfigurationVersion extends cdk.Resource implements IHostedC
     });
 
     this.versionNumber = resource.ref;
+    this.hostedConfigurationVersionArn = `${this.configurationProfile.configurationProfileArn}/hostedconfigurationversion/${this.versionNumber}`;
   }
 }

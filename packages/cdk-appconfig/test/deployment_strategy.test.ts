@@ -22,6 +22,14 @@ describe('AppConfig', () => {
         expect(typeof strategy.deploymentStrategyId).toEqual('string');
       });
 
+      it('has a deployment strategy name', () => {
+        expect(typeof strategy.deploymentStrategyName).toEqual('string');
+      });
+
+      it('has a deployment strategy arn', () => {
+        expect(typeof strategy.deploymentStrategyArn).toEqual('string');
+      });
+
       it('creates a deployment strategy with required properties', () => {
         expectCDK(stack).to(
           haveResource('AWS::AppConfig::DeploymentStrategy', {
@@ -118,8 +126,13 @@ describe('AppConfig', () => {
       });
 
       it('supports custom deployment strategies', () => {
-        const strategy = DeploymentStrategy.fromDeploymentStrategyId(stack, 'ImportedStrategy', 'abc123');
+        const strategy = DeploymentStrategy.fromDeploymentStrategyId(stack, 'ImportedStrategy1', 'abc123');
         expect(strategy.deploymentStrategyId).toEqual('abc123');
+      });
+
+      it('has a deployment strategy arn', () => {
+        const strategy = DeploymentStrategy.fromDeploymentStrategyId(stack, 'ImportedStrategy2', 'def456');
+        expect(strategy.deploymentStrategyArn).toMatch(/:deploymentstrategy\/def456/);
       });
     });
   });
