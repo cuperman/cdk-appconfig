@@ -172,8 +172,8 @@ const exponentialStrategy = new appconfig.DeploymentStrategy(
   {
     growthType: appconfig.DeploymentStrategyGrowthType.EXPONENTIAL,
     growthFactor: 2,
-    deploymentDurationInMinutes: 10,
-    finalBakeTimeInMinutes: 0
+    deploymentDuration: cdk.Duration.minutes(10),
+    finalBakeTime: cdk.Duration.minutes(0)
   }
 );
 

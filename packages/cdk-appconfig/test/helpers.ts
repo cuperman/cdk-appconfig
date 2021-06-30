@@ -56,11 +56,11 @@ export function buildEnvironment(
 
 export function buildDeploymentStrategy(
   scope: cdk.Construct,
-  options?: { name?: string; deploymentDurationInMinutes?: number; growthFactor?: number }
+  options?: { name?: string; deploymentDuration?: cdk.Duration; growthFactor?: number }
 ): appconfig.IDeploymentStrategy {
   return new appconfig.DeploymentStrategy(scope, 'MyDeploymentStrategy', {
     name: options?.name || 'MyDeploymentStrategy',
-    deploymentDurationInMinutes: options?.deploymentDurationInMinutes || 0,
+    deploymentDuration: options?.deploymentDuration || cdk.Duration.minutes(0),
     growthFactor: options?.growthFactor || 0
   });
 }

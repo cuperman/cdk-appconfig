@@ -35,11 +35,11 @@ export enum DeploymentStrategyGrowthType {
 
 export interface DeploymentStrategyProps {
   readonly name?: string;
-  readonly deploymentDurationInMinutes: number;
+  readonly deploymentDuration: cdk.Duration;
   readonly growthFactor: number;
   readonly replicateTo?: DeploymentStrategyReplication;
   readonly description?: string;
-  readonly finalBakeTimeInMinutes?: number;
+  readonly finalBakeTime?: cdk.Duration;
   readonly growthType?: DeploymentStrategyGrowthType;
   readonly removalPolicy?: cdk.RemovalPolicy;
 }
@@ -61,11 +61,11 @@ export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrat
 
     this.resource = new appconfig.CfnDeploymentStrategy(this, 'Resource', {
       name: props.name || cdk.Names.uniqueId(this),
-      deploymentDurationInMinutes: props.deploymentDurationInMinutes,
+      deploymentDurationInMinutes: props.deploymentDuration.toMinutes(),
       growthFactor: props.growthFactor,
       replicateTo: props.replicateTo || DEFAULT_REPLICATION,
       description: props.description,
-      finalBakeTimeInMinutes: props.finalBakeTimeInMinutes,
+      finalBakeTimeInMinutes: props.finalBakeTime?.toMinutes(),
       growthType: props.growthType
     });
 

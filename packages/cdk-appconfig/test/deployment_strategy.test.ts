@@ -14,7 +14,7 @@ describe('AppConfig', () => {
       const stack = buildCdkStack();
 
       const strategy = new DeploymentStrategy(stack, 'MyDeploymentStrategy', {
-        deploymentDurationInMinutes: 0,
+        deploymentDuration: cdk.Duration.minutes(0),
         growthFactor: 100
       });
 
@@ -62,9 +62,9 @@ describe('AppConfig', () => {
         name: 'Exponential rollout',
         description: 'Start small and roll out exponentially over 10 minutes',
         growthType: DeploymentStrategyGrowthType.EXPONENTIAL,
-        deploymentDurationInMinutes: 10,
+        deploymentDuration: cdk.Duration.minutes(10),
         growthFactor: 2,
-        finalBakeTimeInMinutes: 0,
+        finalBakeTime: cdk.Duration.minutes(0),
         replicateTo: DeploymentStrategyReplication.SSM_DOCUMENT,
         removalPolicy: cdk.RemovalPolicy.RETAIN
       });
@@ -97,7 +97,7 @@ describe('AppConfig', () => {
 
       new DeploymentStrategy(stack, 'MyDeploymentStrategy', {
         name: 'My Deployment Strategy',
-        deploymentDurationInMinutes: 0,
+        deploymentDuration: cdk.Duration.minutes(0),
         growthFactor: 100
       });
 
