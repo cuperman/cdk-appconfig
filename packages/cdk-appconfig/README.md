@@ -34,15 +34,11 @@ const configBucket = new s3.Bucket(this, 'ConfigBucket');
 
 const app = new appconfig.Application(this, 'App');
 
-const configProfile = new appconfig.S3ConfigurationProfile(
-  this,
-  'ConfigProfile',
-  {
-    application: app,
-    s3Bucket: configBucket,
-    s3ObjectKey: 'path/to/config.json'
-  }
-);
+const configProfile = new appconfig.S3ConfigurationProfile(this, 'ConfigProfile', {
+  application: app,
+  s3Bucket: configBucket,
+  s3ObjectKey: 'path/to/config.json'
+});
 ```
 
 ### Hosted Configurations
@@ -68,13 +64,9 @@ import * as appconfig from '@cuperman/cdk-appconfig';
 
 const app = new appconfig.Application(this, 'App');
 
-const configProfile = new appconfig.HostedConfigurationProfile(
-  this,
-  'ConfigProfile',
-  {
-    application: app
-  }
-);
+const configProfile = new appconfig.HostedConfigurationProfile(this, 'ConfigProfile', {
+  application: app
+});
 
 new appconfig.HostedConfigurationVersion(this, 'ConfigVersion', {
   application: app,
@@ -147,10 +139,10 @@ const env = new appconfig.Environment( ... );
 const config = new appconfig.HostedConfigurationProfile( ... );
 
 // grant access to get configurations from config on any environment
-grantable.grantGetConfiguration(config);
+config.grantGetConfiguration(grantable);
 
 // grant access to get configurations from config on a specific environment
-grantable.grantGetConfiguration(config, env);
+config.grantGetConfiguration(grantable, env);
 ```
 
 ### Deployments
@@ -200,7 +192,7 @@ prodEnv.addDeployment({
 });
 ```
 
-The `Environment.addDeployment` method implicitly creates dependencies for each deployment to ensure they run in order, serially.  Only one Deployment can run concurrently per Environment in AppConfig.
+The `Environment.addDeployment` method implicitly creates dependencies for each deployment to ensure they run in order, serially. Only one Deployment can run concurrently per Environment in AppConfig.
 
 ### Alarms
 
