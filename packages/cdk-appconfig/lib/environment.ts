@@ -117,4 +117,18 @@ export class Environment extends cdk.Resource implements IEnvironment, cdk.ITagg
 
     return deployment;
   }
+
+  public grantStartDeployment(grantee: iam.IGrantable): iam.Grant {
+    return iam.Grant.addToPrincipal({
+      grantee,
+      actions: ['appconfig:StartDeployment'],
+      resourceArns: [
+        this.application.applicationArn,
+        this.environmentArn,
+        `${this.application.applicationArn}/configurationprofile/*`,
+        `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:deploymentstrategy/*`,
+        `${this.environmentArn}/deployment/*`
+      ]
+    });
+  }
 }

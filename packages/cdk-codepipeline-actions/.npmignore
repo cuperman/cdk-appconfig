@@ -1,0 +1,10 @@
+*.ts
+!*.d.ts
+node_modules/
+yarn-error.log
+
+# Exclude jsii outdir
+pkg
+
+# Include .jsii
+!.jsii

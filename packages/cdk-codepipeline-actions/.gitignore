@@ -1,0 +1,12 @@
+*.js
+!jest.config.js
+*.d.ts
+node_modules/
+yarn-error.log
+
+# Ignore jsii files
+.jsii
+tsconfig.json
+*.tsbuildinfo
+dist/
+pkg/
