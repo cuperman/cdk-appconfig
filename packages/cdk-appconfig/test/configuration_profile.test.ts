@@ -316,5 +316,53 @@ describe('AppConfig', () => {
         })
       );
     });
+
+    it('implicitly creates a retrieval role and policy', () => {
+      expectCDK(stack).to(
+        haveResourceLike('AWS::IAM::Role', {
+          AssumeRolePolicyDocument: {
+            Statement: [
+              {
+                Effect: 'Allow',
+                Principal: {
+                  Service: 'appconfig.amazonaws.com'
+                },
+                Action: 'sts:AssumeRole'
+              }
+            ]
+          }
+        })
+      );
+
+      expectCDK(stack).to(
+        haveResourceLike('AWS::IAM::Policy', {
+          PolicyDocument: {
+            Statement: [
+              {
+                Effect: 'Allow',
+                Action: ['s3:GetObject', 's3:GetObjectVersion'],
+                Resource: anything()
+              },
+              {
+                Effect: 'Allow',
+                Action: ['s3:GetBucketLocation', 's3:GetBucketVersioning', 's3:ListBucketVersions', 's3:ListBucket'],
+                Resource: anything()
+              },
+              {
+                Effect: 'Allow',
+                Action: 's3:ListAllMyBuckets',
+                Resource: '*'
+              }
+            ]
+          }
+        })
+      );
+
+      expectCDK(stack).to(
+        haveResource('AWS::AppConfig::ConfigurationProfile', {
+          RetrievalRoleArn: anything()
+        })
+      );
+    });
   });
 });

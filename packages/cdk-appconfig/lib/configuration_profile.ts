@@ -2,6 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as appconfig from '@aws-cdk/aws-appconfig';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as iam from '@aws-cdk/aws-iam';
+import * as ssm from '@aws-cdk/aws-ssm';
 
 import { IApplication } from './application';
 import { IEnvironment } from './environment';
@@ -22,6 +23,7 @@ export interface ConfigurationProfileBaseProps {
 
 export interface ConfigurationProfileProps extends ConfigurationProfileBaseProps {
   readonly locationUri: string;
+  readonly retrievalRoleArn?: string;
 }
 
 export class ConfigurationProfile extends cdk.Resource implements IConfigurationProfile, cdk.ITaggable {
@@ -30,7 +32,7 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
   public readonly configurationProfileName: string;
   public readonly configurationProfileArn: string;
   public readonly tags: cdk.TagManager;
-  private readonly resource: appconfig.CfnConfigurationProfile;
+  protected readonly resource: appconfig.CfnConfigurationProfile;
 
   constructor(scope: cdk.Construct, id: string, props: ConfigurationProfileProps) {
     super(scope, id);
@@ -77,11 +79,63 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
   }
 }
 
-// TODO
-// export class SsmDocumentConfigurationProfile extends ConfigurationProfile {}
+export interface SsmDocumentConfigurationProfileProps extends ConfigurationProfileBaseProps {
+  readonly ssmDocument: ssm.CfnDocument;
+}
 
-// TODO
-// export class SsmParameterConfigurationProfile extends ConfigurationProfile {}
+export class SsmDocumentConfigurationProfile extends ConfigurationProfile {
+  constructor(scope: cdk.Construct, id: string, props: SsmDocumentConfigurationProfileProps) {
+    const ssmDocumentName = props.ssmDocument.ref;
+    const ssmDocumentArn = `arn:${cdk.Aws.PARTITION}:ssm:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:document/${ssmDocumentName}`;
+    const locationUri = ssmDocumentArn;
+    super(scope, id, { ...props, locationUri });
+
+    const retrievalRole = new iam.Role(this, 'RetrievalRole', {
+      assumedBy: new iam.ServicePrincipal('appconfig.amazonaws.com')
+    });
+
+    const retrievalPolicy = new iam.Policy(this, 'RetrievalPolicy', {
+      roles: [retrievalRole],
+      statements: [
+        new iam.PolicyStatement({
+          actions: ['ssm:GetDocument'],
+          resources: [ssmDocumentArn]
+        })
+      ]
+    });
+
+    this.resource.retrievalRoleArn = retrievalRole.roleArn;
+    this.resource.addDependsOn(retrievalPolicy.node.defaultChild as iam.CfnPolicy);
+  }
+}
+
+export interface SsmParameterConfigurationProfileProps extends ConfigurationProfileBaseProps {
+  readonly ssmParameter: ssm.IParameter;
+}
+
+export class SsmParameterConfigurationProfile extends ConfigurationProfile {
+  constructor(scope: cdk.Construct, id: string, props: SsmParameterConfigurationProfileProps) {
+    const locationUri = props.ssmParameter.parameterArn;
+    super(scope, id, { ...props, locationUri });
+
+    const retrievalRole = new iam.Role(this, 'RetrievalRole', {
+      assumedBy: new iam.ServicePrincipal('appconfig.amazonaws.com')
+    });
+
+    const retrievalPolicy = new iam.Policy(this, 'RetrievalPolicy', {
+      roles: [retrievalRole],
+      statements: [
+        new iam.PolicyStatement({
+          actions: ['ssm:GetParameter'],
+          resources: [props.ssmParameter.parameterArn]
+        })
+      ]
+    });
+
+    this.resource.retrievalRoleArn = retrievalRole.roleArn;
+    this.resource.addDependsOn(retrievalPolicy.node.defaultChild as iam.CfnPolicy);
+  }
+}
 
 export interface S3ConfigurationProfileProps extends ConfigurationProfileBaseProps {
   readonly s3Bucket: s3.IBucket;
@@ -92,6 +146,31 @@ export class S3ConfigurationProfile extends ConfigurationProfile {
   constructor(scope: cdk.Construct, id: string, props: S3ConfigurationProfileProps) {
     const locationUri = props.s3Bucket.s3UrlForObject(props.s3ObjectKey);
     super(scope, id, { ...props, locationUri });
+
+    const retrievalRole = new iam.Role(this, 'RetrievalRole', {
+      assumedBy: new iam.ServicePrincipal('appconfig.amazonaws.com')
+    });
+
+    const retrievalPolicy = new iam.Policy(this, 'RetrievalPolicy', {
+      roles: [retrievalRole],
+      statements: [
+        new iam.PolicyStatement({
+          actions: ['s3:GetObject', 's3:GetObjectVersion'],
+          resources: [props.s3Bucket.arnForObjects(props.s3ObjectKey)]
+        }),
+        new iam.PolicyStatement({
+          actions: ['s3:GetBucketLocation', 's3:GetBucketVersioning', 's3:ListBucketVersions', 's3:ListBucket'],
+          resources: [props.s3Bucket.bucketArn]
+        }),
+        new iam.PolicyStatement({
+          actions: ['s3:ListAllMyBuckets'],
+          resources: ['*']
+        })
+      ]
+    });
+
+    this.resource.retrievalRoleArn = retrievalRole.roleArn;
+    this.resource.addDependsOn(retrievalPolicy.node.defaultChild as iam.CfnPolicy);
   }
 }
 

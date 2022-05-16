@@ -26,7 +26,7 @@ export class LambdaExtensionStack extends cdk.Stack {
       name: 'demo'
     });
 
-    const configuration = new appconfig.HostedConfigurationProfile(this, 'Profile', {
+    const configuration = new appconfig.HostedConfigurationProfile(this, 'Configuration', {
       application,
       name: 'ExclamationPoints',
       validators: [

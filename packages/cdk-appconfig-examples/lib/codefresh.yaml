@@ -1,0 +1,45 @@
+steps:
+  configure_environment:
+    title: Configure environment
+    type: freestyle
+    image: alpine
+    commands:
+      - >
+          case "${{CF_BRANCH}}" in
+              master)
+                  cf_export ENV=prod
+                  cf_export AWS_REGIONS=us-east-1,eu-west-1,ap-southeast-1
+                  cf_export AWS_PROFILE=vmx-vcas-prod
+                  ;;
+              develop)
+                  cf_export ENV=dev
+                  cf_export AWS_REGIONS=us-east-1,eu-west-1
+                  cf_export AWS_PROFILE=vmx-vcas-dev
+                  ;;
+              *)
+                  cf_export ENV=sandbox
+                  cf_export AWS_REGIONS=us-east-1
+                  cf_export AWS_PROFILE=vmx-vcas-sandbox
+                  ;;
+          esac
+  build_image:
+    type: build
+    ...
+  deploy_infrastructure:
+    type: freestyle
+    commands:
+      - yarn cdk deploy "MultiDRM" --profile ${{AWS_PROFILE}}
+    when:
+    condition:
+      any:
+          envIsDev: '"${{ENV}}" == "dev"'
+          envIsProd: '"${{ENV}}" == "prod"'
+  deploy_code:
+    type: freestyle
+    commands:
+      - yarn create-deployment --stack-name MultiDRM --profile ${{AWS_PROFILE}}
+    when:
+    condition:
+      any:
+          envIsDev: '"${{ENV}}" == "dev"'
+          envIsProd: '"${{ENV}}" == "prod"'
