@@ -1,6 +1,9 @@
 {
   "name": "@cuperman/cdk-appconfig-root",
   "private": true,
+  "engines": {
+    "node": "14"
+  },
   "scripts": {
     "lerna": "lerna"
   },
