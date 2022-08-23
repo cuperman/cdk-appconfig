@@ -1,7 +1,7 @@
-import * as cdk from '@aws-cdk/core';
-import * as appconfig from '@aws-cdk/aws-appconfig';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as iam from '@aws-cdk/aws-iam';
+import * as cdk from 'aws-cdk-lib';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import { Construct } from 'constructs';
 
 import { IApplication } from './application';
 import { IEnvironment } from './environment';
@@ -30,35 +30,39 @@ export class ConfigurationProfile extends cdk.Resource implements IConfiguration
   public readonly configurationProfileName: string;
   public readonly configurationProfileArn: string;
   public readonly tags: cdk.TagManager;
-  private readonly resource: appconfig.CfnConfigurationProfile;
+  private readonly resource: cdk.CfnResource;
 
-  constructor(scope: cdk.Construct, id: string, props: ConfigurationProfileProps) {
+  constructor(scope: Construct, id: string, props: ConfigurationProfileProps) {
     super(scope, id);
 
+    const RESOURCE_TYPE = 'AWS::AppConfig::ConfigurationProfile';
     const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.RETAIN;
 
     this.application = props.application;
-    this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::ConfigurationProfile');
+    this.configurationProfileName = props.name || cdk.Names.uniqueId(this);
+    this.tags = new cdk.TagManager(cdk.TagType.KEY_VALUE, RESOURCE_TYPE);
 
     const validatorConfigs = props.validators?.map((validator) => validator.bind(this));
 
-    this.resource = new appconfig.CfnConfigurationProfile(this, 'Resource', {
-      applicationId: this.application.applicationId,
-      name: props.name || cdk.Names.uniqueId(this),
-      description: props.description,
-      locationUri: props.locationUri,
-      validators: validatorConfigs?.map((config) => ({ ...config, type: config.validatorType }))
+    this.resource = new cdk.CfnResource(this, 'Resource', {
+      type: RESOURCE_TYPE,
+      properties: {
+        ApplicationId: this.application.applicationId,
+        Name: this.configurationProfileName,
+        Description: props.description,
+        LocationUri: props.locationUri,
+        Validators: validatorConfigs?.map((config) => ({
+          Type: config.validatorType,
+          Content: config.content
+        })),
+        Tags: this.tags.renderedTags
+      }
     });
 
     this.resource.applyRemovalPolicy(props.removalPolicy || DEFAULT_REMOVAL_POLICY);
 
     this.configurationProfileId = this.resource.ref;
-    this.configurationProfileName = this.resource.name;
     this.configurationProfileArn = `${this.application.applicationArn}/configurationprofile/${this.configurationProfileId}`;
-  }
-
-  protected prepare() {
-    this.resource.tags = this.tags.renderTags();
   }
 
   public grantGetConfiguration(grantee: iam.IGrantable, environment?: IEnvironment): iam.Grant {
@@ -89,7 +93,7 @@ export interface S3ConfigurationProfileProps extends ConfigurationProfileBasePro
 }
 
 export class S3ConfigurationProfile extends ConfigurationProfile {
-  constructor(scope: cdk.Construct, id: string, props: S3ConfigurationProfileProps) {
+  constructor(scope: Construct, id: string, props: S3ConfigurationProfileProps) {
     const locationUri = props.s3Bucket.s3UrlForObject(props.s3ObjectKey);
     super(scope, id, { ...props, locationUri });
   }
@@ -98,7 +102,7 @@ export class S3ConfigurationProfile extends ConfigurationProfile {
 export type HostedConfigurationProfileProps = ConfigurationProfileBaseProps;
 
 export class HostedConfigurationProfile extends ConfigurationProfile {
-  constructor(scope: cdk.Construct, id: string, props: HostedConfigurationProfileProps) {
+  constructor(scope: Construct, id: string, props: HostedConfigurationProfileProps) {
     const locationUri = 'hosted';
     super(scope, id, { ...props, locationUri });
   }

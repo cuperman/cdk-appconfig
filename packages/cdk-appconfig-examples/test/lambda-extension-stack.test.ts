@@ -1,5 +1,5 @@
 import { anything, expect as expectCDK, haveResource, haveResourceLike } from '@aws-cdk/assert';
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
 import { LambdaExtensionStack } from '../lib';
 
 describe('LambdaExtensionStack', () => {

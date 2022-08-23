@@ -1,6 +1,6 @@
 import { anything, expect as expectCDK, haveResource, ResourcePart } from '@aws-cdk/assert';
 import { buildCdkStack } from './helpers';
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
 import {
   DeploymentStrategy,
   DeploymentStrategyGrowthType,

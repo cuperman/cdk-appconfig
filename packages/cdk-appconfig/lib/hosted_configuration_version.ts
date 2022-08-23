@@ -1,9 +1,10 @@
 import * as path from 'path';
 
-import * as cdk from '@aws-cdk/core';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as cr from '@aws-cdk/custom-resources';
-import * as iam from '@aws-cdk/aws-iam';
+import * as cdk from 'aws-cdk-lib';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as cr from 'aws-cdk-lib/custom-resources';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import { Construct } from 'constructs';
 
 import { IApplication } from './application';
 import { IConfigurationProfile } from './configuration_profile';
@@ -46,7 +47,7 @@ export class HostedConfigurationVersion extends cdk.Resource implements IHostedC
   public readonly versionNumber: string;
   public readonly hostedConfigurationVersionArn: string;
 
-  constructor(scope: cdk.Construct, id: string, props: HostedConfigurationVersionProps) {
+  constructor(scope: Construct, id: string, props: HostedConfigurationVersionProps) {
     super(scope, id);
 
     const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.RETAIN;

@@ -1,5 +1,5 @@
-import * as cdk from '@aws-cdk/core';
-import * as appconfig from '@aws-cdk/aws-appconfig';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 
 import { IApplication } from './application';
 import { IConfigurationProfile } from './configuration_profile';
@@ -26,30 +26,32 @@ export class Deployment extends cdk.Resource implements IDeployment, cdk.ITaggab
   public readonly deploymentId: string;
   public readonly deploymentArn: string;
   public readonly tags: cdk.TagManager;
-  private readonly resource: appconfig.CfnDeployment;
+  private readonly resource: cdk.CfnResource;
 
-  constructor(scope: cdk.Construct, id: string, props: DeploymentProps) {
+  constructor(scope: Construct, id: string, props: DeploymentProps) {
     super(scope, id);
+
+    const RESOURCE_TYPE = 'AWS::AppConfig::Deployment';
 
     this.application = props.application;
     this.environment = props.environment;
 
-    this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::Deployment');
+    this.tags = new cdk.TagManager(cdk.TagType.KEY_VALUE, RESOURCE_TYPE);
 
-    this.resource = new appconfig.CfnDeployment(this, 'Resource', {
-      applicationId: this.application.applicationId,
-      environmentId: this.environment.environmentId,
-      configurationProfileId: props.configurationProfile.configurationProfileId,
-      configurationVersion: props.configurationVersionNumber,
-      deploymentStrategyId: props.deploymentStrategy.deploymentStrategyId,
-      description: props.description
+    this.resource = new cdk.CfnResource(this, 'Resource', {
+      type: RESOURCE_TYPE,
+      properties: {
+        ApplicationId: this.application.applicationId,
+        EnvironmentId: this.environment.environmentId,
+        ConfigurationProfileId: props.configurationProfile.configurationProfileId,
+        ConfigurationVersion: props.configurationVersionNumber,
+        DeploymentStrategyId: props.deploymentStrategy.deploymentStrategyId,
+        Description: props.description,
+        Tags: this.tags.renderedTags
+      }
     });
 
     this.deploymentId = this.resource.ref;
     this.deploymentArn = `${this.environment.environmentArn}/deployment/${this.deploymentId}`;
-  }
-
-  protected prepare() {
-    this.resource.tags = this.tags.renderTags();
   }
 }

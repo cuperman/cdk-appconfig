@@ -1,7 +1,8 @@
 import * as path from 'path';
 
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
 import * as appconfig from '@cuperman/cdk-appconfig';
+import { Construct } from 'constructs';
 
 export class HostedConfigurationStack extends cdk.Stack {
   public app: appconfig.IApplication;
@@ -11,7 +12,7 @@ export class HostedConfigurationStack extends cdk.Stack {
   public strategy: appconfig.IDeploymentStrategy;
   public deployment: appconfig.Deployment;
 
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     this.app = new appconfig.Application(this, 'App', {

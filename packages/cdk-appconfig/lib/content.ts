@@ -1,6 +1,6 @@
-import * as cdk from '@aws-cdk/core';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as s3Assets from '@aws-cdk/aws-s3-assets';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as s3Assets from 'aws-cdk-lib/aws-s3-assets';
+import { Construct } from 'constructs';
 
 export enum ContentType {
   TEXT = 'text/plain',
@@ -20,7 +20,7 @@ export abstract class Content {
    *
    * @param scope The binding scope
    */
-  public abstract bind(scope: cdk.Construct): ContentConfig;
+  public abstract bind(scope: Construct): ContentConfig;
 
   public static fromInline(content: string): InlineContent {
     return new InlineContent(content);
@@ -44,7 +44,7 @@ export class InlineContent extends Content {
     this.content = content;
   }
 
-  bind(_scope: cdk.Construct): ContentConfig {
+  bind(_scope: Construct): ContentConfig {
     return {
       inlineContent: this.content
     };
@@ -64,7 +64,7 @@ export class BucketContent extends Content {
     this.objectVersion = objectVersion;
   }
 
-  bind(_scope: cdk.Construct): ContentConfig {
+  bind(_scope: Construct): ContentConfig {
     return {
       s3Location: {
         bucketName: this.bucket.bucketName,
@@ -86,7 +86,7 @@ export class AssetContent extends Content {
     this.options = options;
   }
 
-  bind(scope: cdk.Construct): ContentConfig {
+  bind(scope: Construct): ContentConfig {
     const asset = new s3Assets.Asset(scope, 'ContentAsset', {
       path: this.path,
       ...this.options

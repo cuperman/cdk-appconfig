@@ -1,5 +1,5 @@
-import * as cdk from '@aws-cdk/core';
-import * as appconfig from '@aws-cdk/aws-appconfig';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 
 export interface IApplication extends cdk.IResource {
   readonly applicationId: string;
@@ -17,28 +17,29 @@ export class Application extends cdk.Resource implements IApplication, cdk.ITagg
   public readonly applicationArn: string;
   public readonly applicationName: string;
   public readonly tags: cdk.TagManager;
-  private readonly resource: appconfig.CfnApplication;
+  private readonly resource: cdk.CfnResource;
 
-  constructor(scope: cdk.Construct, id: string, props?: ApplicationProps) {
+  constructor(scope: Construct, id: string, props?: ApplicationProps) {
     super(scope, id);
 
+    const RESOURCE_TYPE = 'AWS::AppConfig::Application';
     const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.RETAIN;
 
-    this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::Application');
+    this.applicationName = props?.name || cdk.Names.uniqueId(this);
+    this.tags = new cdk.TagManager(cdk.TagType.KEY_VALUE, RESOURCE_TYPE);
 
-    this.resource = new appconfig.CfnApplication(this, 'Resource', {
-      name: props?.name || cdk.Names.uniqueId(this),
-      description: props?.description
+    this.resource = new cdk.CfnResource(this, 'Resource', {
+      type: RESOURCE_TYPE,
+      properties: {
+        Name: this.applicationName,
+        Description: props?.description,
+        Tags: this.tags.renderedTags
+      }
     });
 
     this.resource.applyRemovalPolicy(props?.removalPolicy || DEFAULT_REMOVAL_POLICY);
 
     this.applicationId = this.resource.ref;
-    this.applicationName = this.resource.name;
     this.applicationArn = `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:application/${this.applicationId}`;
-  }
-
-  protected prepare() {
-    this.resource.tags = this.tags.renderTags();
   }
 }

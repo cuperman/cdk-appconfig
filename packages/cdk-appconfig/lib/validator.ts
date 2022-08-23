@@ -1,6 +1,6 @@
-import * as cdk from '@aws-cdk/core';
-import * as lambda from '@aws-cdk/aws-lambda';
-import * as iam from '@aws-cdk/aws-iam';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import { Construct } from 'constructs';
 
 export enum ValidatorType {
   JSON_SCHEMA = 'JSON_SCHEMA',
@@ -19,7 +19,7 @@ export abstract class Validator {
    *
    * @param scope The binding scope
    */
-  public abstract bind(scope: cdk.Construct): ValidatorConfig;
+  public abstract bind(scope: Construct): ValidatorConfig;
 }
 
 export abstract class JsonSchemaValidator extends Validator {
@@ -43,7 +43,7 @@ export class InlineJsonSchemaValidator extends JsonSchemaValidator {
     this.content = content;
   }
 
-  bind(_scope: cdk.Construct): ValidatorConfig {
+  bind(_scope: Construct): ValidatorConfig {
     return {
       validatorType: ValidatorType.JSON_SCHEMA,
       content: this.content
@@ -60,7 +60,7 @@ export class LambdaValidator extends Validator {
     this.lambdaFunction = lambdaFunction;
   }
 
-  bind(_scope: cdk.Construct): ValidatorConfig {
+  bind(_scope: Construct): ValidatorConfig {
     this.lambdaFunction.addPermission('AppConfigPermission', {
       principal: new iam.ServicePrincipal('appconfig.amazonaws.com')
     });

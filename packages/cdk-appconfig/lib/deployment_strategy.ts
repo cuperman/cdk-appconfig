@@ -1,5 +1,5 @@
-import * as cdk from '@aws-cdk/core';
-import * as appconfig from '@aws-cdk/aws-appconfig';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 
 export interface IDeploymentStrategy extends cdk.IResource {
   readonly deploymentStrategyId: string;
@@ -10,7 +10,7 @@ export class ImportedDeploymentStrategy extends cdk.Resource implements IDeploym
   public readonly deploymentStrategyId: string;
   public readonly deploymentStrategyArn: string;
 
-  constructor(scope: cdk.Construct, id: string, deploymentStrategyId: string) {
+  constructor(scope: Construct, id: string, deploymentStrategyId: string) {
     super(scope, id);
     this.deploymentStrategyId = deploymentStrategyId;
     this.deploymentStrategyArn = `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:deploymentstrategy/${this.deploymentStrategyId}`;
@@ -49,42 +49,43 @@ export class DeploymentStrategy extends cdk.Resource implements IDeploymentStrat
   public readonly deploymentStrategyName: string;
   public readonly deploymentStrategyArn: string;
   public readonly tags: cdk.TagManager;
-  private readonly resource: appconfig.CfnDeploymentStrategy;
+  private readonly resource: cdk.CfnResource;
 
-  constructor(scope: cdk.Construct, id: string, props: DeploymentStrategyProps) {
+  constructor(scope: Construct, id: string, props: DeploymentStrategyProps) {
     super(scope, id);
 
+    const RESOURCE_TYPE = 'AWS::AppConfig::DeploymentStrategy';
     const DEFAULT_REPLICATION = DeploymentStrategyReplication.NONE;
     const DEFAULT_REMOVAL_POLICY = cdk.RemovalPolicy.DESTROY;
 
-    this.tags = new cdk.TagManager(cdk.TagType.STANDARD, 'AWS::AppConfig::DeploymentStrategy');
+    this.deploymentStrategyName = props.name || cdk.Names.uniqueId(this);
+    this.tags = new cdk.TagManager(cdk.TagType.KEY_VALUE, RESOURCE_TYPE);
 
-    this.resource = new appconfig.CfnDeploymentStrategy(this, 'Resource', {
-      name: props.name || cdk.Names.uniqueId(this),
-      deploymentDurationInMinutes: props.deploymentDuration.toMinutes(),
-      growthFactor: props.growthFactor,
-      replicateTo: props.replicateTo || DEFAULT_REPLICATION,
-      description: props.description,
-      finalBakeTimeInMinutes: props.finalBakeTime?.toMinutes(),
-      growthType: props.growthType
+    this.resource = new cdk.CfnResource(this, 'Resource', {
+      type: RESOURCE_TYPE,
+      properties: {
+        Name: this.deploymentStrategyName,
+        DeploymentDurationInMinutes: props.deploymentDuration.toMinutes(),
+        GrowthFactor: props.growthFactor,
+        ReplicateTo: props.replicateTo || DEFAULT_REPLICATION,
+        Description: props.description,
+        FinalBakeTimeInMinutes: props.finalBakeTime?.toMinutes(),
+        GrowthType: props.growthType,
+        Tags: this.tags.renderedTags
+      }
     });
 
     this.resource.applyRemovalPolicy(props.removalPolicy || DEFAULT_REMOVAL_POLICY);
 
     this.deploymentStrategyId = this.resource.ref;
-    this.deploymentStrategyName = this.resource.name;
     this.deploymentStrategyArn = `arn:${cdk.Aws.PARTITION}:appconfig:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:deploymentstrategy/${this.deploymentStrategyId}`;
   }
 
   public static fromDeploymentStrategyId(
-    scope: cdk.Construct,
+    scope: Construct,
     id: string,
     deploymentStrategyId: PredefinedDeploymentStrategy | string
   ) {
     return new ImportedDeploymentStrategy(scope, id, deploymentStrategyId);
-  }
-
-  protected prepare() {
-    this.resource.tags = this.tags.renderTags();
   }
 }

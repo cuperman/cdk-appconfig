@@ -1,5 +1,6 @@
-import * as cdk from '@aws-cdk/core';
-import * as lambda from '@aws-cdk/aws-lambda';
+import * as cdk from 'aws-cdk-lib';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { Construct } from 'constructs';
 
 export interface LambdaExtensionLayerProps {
   readonly region?: string;
@@ -9,7 +10,7 @@ export class LambdaExtensionLayer extends cdk.Resource implements lambda.ILayerV
   public readonly layerVersionArn: string;
   private lambdaExtensionMap: cdk.CfnMapping;
 
-  constructor(scope: cdk.Construct, id: string, props?: LambdaExtensionLayerProps) {
+  constructor(scope: Construct, id: string, props?: LambdaExtensionLayerProps) {
     super(scope, id);
 
     // ensure there is only one mapping in the stack
