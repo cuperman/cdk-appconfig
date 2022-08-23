@@ -38,6 +38,7 @@ export class CodePipelineStack extends cdk.Stack {
 
     const profile = new appconfig.CodePipelineConfigurationProfile(this, 'Profile', {
       application: app,
+      name: pipelineName,
       pipelineName,
       validators: [
         appconfig.JsonSchemaValidator.fromInline(`
@@ -63,11 +64,7 @@ export class CodePipelineStack extends cdk.Stack {
       ]
     });
 
-    const strategy = new appconfig.DeploymentStrategy(this, 'Strategy', {
-      growthFactor: 100,
-      deploymentDuration: cdk.Duration.minutes(0),
-      finalBakeTime: cdk.Duration.minutes(0)
-    });
+    const strategy = appconfig.DeploymentStrategy.fromDeploymentStrategyId(this, 'Strategy', 'AppConfig.AllAtOnce');
 
     const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
       pipelineName
