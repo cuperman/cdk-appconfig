@@ -1,12 +1,13 @@
 import * as path from 'path';
 
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 import { expect as expectCDK, haveResource, anything } from '@aws-cdk/assert';
 
 import * as appconfig from '../lib';
 
 class ExampleStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const application = new appconfig.Application(this, 'MyApp', {
@@ -66,7 +67,7 @@ describe('ExampleStack', () => {
         ContentType: 'application/x-yaml',
         ContentConfig: {
           S3Location: {
-            BucketName: { Ref: anything() },
+            BucketName: anything(),
             ObjectKey: anything()
           }
         }

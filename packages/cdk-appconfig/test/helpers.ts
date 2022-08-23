@@ -1,6 +1,7 @@
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
 import * as appconfig from '../lib';
-import * as cloudwatch from '@aws-cdk/aws-cloudwatch';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import { Construct } from 'constructs';
 
 interface Tags {
   [key: string]: string;
@@ -23,18 +24,14 @@ export function buildCdkStack(options?: { tags?: Tags }) {
   return stack;
 }
 
-export function buildApplication(
-  scope: cdk.Construct,
-  id: string,
-  options?: { name?: string }
-): appconfig.IApplication {
+export function buildApplication(scope: Construct, id: string, options?: { name?: string }): appconfig.IApplication {
   return new appconfig.Application(scope, id, {
     name: options?.name || 'MyApplication'
   });
 }
 
 export function buildHostedProfile(
-  scope: cdk.Construct,
+  scope: Construct,
   options?: { application?: appconfig.IApplication; name?: string }
 ): appconfig.IConfigurationProfile {
   return new appconfig.HostedConfigurationProfile(scope, 'MyHostedConfigurationProfile', {
@@ -44,7 +41,7 @@ export function buildHostedProfile(
 }
 
 export function buildEnvironment(
-  scope: cdk.Construct,
+  scope: Construct,
   id: string,
   options?: { application?: appconfig.IApplication; name?: string }
 ): appconfig.IEnvironment {
@@ -55,7 +52,7 @@ export function buildEnvironment(
 }
 
 export function buildDeploymentStrategy(
-  scope: cdk.Construct,
+  scope: Construct,
   options?: { name?: string; deploymentDuration?: cdk.Duration; growthFactor?: number }
 ): appconfig.IDeploymentStrategy {
   return new appconfig.DeploymentStrategy(scope, 'MyDeploymentStrategy', {
@@ -65,7 +62,7 @@ export function buildDeploymentStrategy(
   });
 }
 
-export function buildAlarm(scope: cdk.Construct): cloudwatch.IAlarm {
+export function buildAlarm(scope: Construct): cloudwatch.IAlarm {
   return new cloudwatch.Alarm(scope, 'Alarm', {
     metric: new cloudwatch.Metric({
       namespace: 'namespace',

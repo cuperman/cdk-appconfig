@@ -1,4 +1,4 @@
-import * as lambda from '@aws-cdk/aws-lambda';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 
 import { LambdaExtensionLayer } from '../lib';
 import { buildCdkStack } from './helpers';

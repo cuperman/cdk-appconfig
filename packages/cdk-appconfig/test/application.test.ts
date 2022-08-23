@@ -1,5 +1,5 @@
 import { anything, expect as expectCDK, haveResource, ResourcePart } from '@aws-cdk/assert';
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib';
 
 import { buildCdkStack, buildApplication } from './helpers';
 import { Application } from '../lib';

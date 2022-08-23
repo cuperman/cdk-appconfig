@@ -4,9 +4,10 @@
 
 import * as path from 'path';
 
-import * as cdk from '@aws-cdk/core';
-import * as lambda from '@aws-cdk/aws-lambda';
+import * as cdk from 'aws-cdk-lib';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as appconfig from '@cuperman/cdk-appconfig';
+import { Construct } from 'constructs';
 
 const HELLO_WORLD_CODE_PATH = path.join(
   path.dirname(require.resolve('@cuperman/cdk-appconfig-handler-hello-world/package.json')),
@@ -14,7 +15,7 @@ const HELLO_WORLD_CODE_PATH = path.join(
 );
 
 export class LambdaExtensionStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const application = new appconfig.Application(this, 'Application', {
