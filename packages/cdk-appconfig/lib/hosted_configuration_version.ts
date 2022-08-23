@@ -20,7 +20,7 @@ function uppercaseProperties(props: { [key: string]: any }): { [key: string]: an
   }
 
   return Object.entries(props).reduce((accum, [key, value]) => {
-    const upper = key.substr(0, 1).toUpperCase() + key.substr(1);
+    const upper = key.substring(0, 1).toUpperCase() + key.substring(1);
     return { ...accum, [upper]: uppercaseProperties(value) };
   }, {});
 }
