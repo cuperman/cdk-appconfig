@@ -2,6 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as appconfig from '@aws-cdk/aws-appconfig';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as iam from '@aws-cdk/aws-iam';
+// import * as codepipeline from '@aws-cdk/aws-codepipeline';
 
 import { IApplication } from './application';
 import { IEnvironment } from './environment';
@@ -100,6 +101,18 @@ export type HostedConfigurationProfileProps = ConfigurationProfileBaseProps;
 export class HostedConfigurationProfile extends ConfigurationProfile {
   constructor(scope: cdk.Construct, id: string, props: HostedConfigurationProfileProps) {
     const locationUri = 'hosted';
+    super(scope, id, { ...props, locationUri });
+  }
+}
+
+export interface CodePipelineConfigurationProfileProps extends ConfigurationProfileBaseProps {
+  // readonly pipeline: codepipeline.IPipeline;
+  readonly pipelineName: string;
+}
+
+export class CodePipelineConfigurationProfile extends ConfigurationProfile {
+  constructor(scope: cdk.Construct, id: string, props: CodePipelineConfigurationProfileProps) {
+    const locationUri = `codepipeline://${props.pipelineName}`;
     super(scope, id, { ...props, locationUri });
   }
 }

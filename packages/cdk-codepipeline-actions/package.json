@@ -1,6 +1,6 @@
 {
-  "name": "@cuperman/cdk-appconfig",
-  "description": "High-level CDK Constructs for AWS AppConfig",
+  "name": "@cuperman/cdk-codepipeline-actions",
+  "description": "AWS CodePipeline Actions",
   "license": "MIT",
   "version": "0.7.0",
   "author": {
@@ -10,7 +10,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/cuperman/cdk-appconfig",
-    "path": "packages/cdk-appconfig"
+    "path": "packages/cdk-codepipeline-actions"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -39,33 +39,19 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-appconfig": "^1.0.0",
-    "@aws-cdk/aws-cloudwatch": "^1.0.0",
     "@aws-cdk/aws-codepipeline": "^1.0.0",
+    "@aws-cdk/aws-codepipeline-actions": "^1.0.0",
     "@aws-cdk/aws-iam": "^1.0.0",
-    "@aws-cdk/aws-lambda": "^1.0.0",
-    "@aws-cdk/aws-s3": "^1.0.0",
-    "@aws-cdk/aws-s3-assets": "^1.0.0",
     "@aws-cdk/core": "^1.0.0",
-    "@aws-cdk/custom-resources": "^1.0.0",
-    "@cuperman/cdk-appconfig-handler-hosted-configuration-version": "^0.7.0"
+    "@cuperman/cdk-appconfig": "^0.7.0"
   },
   "peerDependencies": {
-    "@aws-cdk/assets": "^1.0.0",
-    "@aws-cdk/aws-appconfig": "^1.0.0",
-    "@aws-cdk/aws-cloudwatch": "^1.0.0",
     "@aws-cdk/aws-codepipeline": "^1.0.0",
+    "@aws-cdk/aws-codepipeline-actions": "^1.0.0",
     "@aws-cdk/aws-iam": "^1.0.0",
-    "@aws-cdk/aws-lambda": "^1.0.0",
-    "@aws-cdk/aws-s3": "^1.0.0",
-    "@aws-cdk/aws-s3-assets": "^1.0.0",
     "@aws-cdk/core": "^1.0.0",
-    "@aws-cdk/custom-resources": "^1.0.0",
-    "constructs": "^3.0.0"
+    "@cuperman/cdk-appconfig": "^0.7.0"
   },
-  "bundledDependencies": [
-    "@cuperman/cdk-appconfig-handler-hosted-configuration-version"
-  ],
   "stability": "experimental",
   "jsii": {
     "tsc": {
@@ -75,8 +61,8 @@
     "versionFormat": "full",
     "targets": {
       "python": {
-        "distName": "cdk-appconfig",
-        "module": "cdk_appconfig"
+        "distName": "cdk-codepipeline-actions",
+        "module": "cdk_codepipeline_actions"
       }
     }
   }
