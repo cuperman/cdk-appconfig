@@ -1,6 +1,10 @@
 const S3 = require('aws-sdk/clients/s3');
 const AppConfig = require('aws-sdk/clients/appconfig');
 
+const RETRY_MAX = 12; // retry up to 12 times if throttled
+const RETRY_BASE_MS = 100; // increase delay exponentially with a base of 100ms
+// note: retrying 12 times with base of 100ms may take up to 14 minutes in the worst case; set timeout accordingly
+
 async function getContent(contentConfig) {
   console.log('getContent', contentConfig);
 
@@ -15,7 +19,12 @@ async function getContent(contentConfig) {
     throw new Error(`ContentConfig requires either InlineContent or S3Location`);
   }
 
-  const s3 = new S3();
+  const s3 = new S3({
+    maxRetries: RETRY_MAX,
+    retryDelayOptions: {
+      base: RETRY_BASE_MS
+    }
+  });
 
   const params = {
     Bucket: s3Location.BucketName,
@@ -33,7 +42,12 @@ async function createConfigurationVersion(props) {
   console.log('createConfigurationVersion', props);
   const content = await getContent(props.ContentConfig);
 
-  const appconfig = new AppConfig();
+  const appconfig = new AppConfig({
+    maxRetries: RETRY_MAX,
+    retryDelayOptions: {
+      base: RETRY_BASE_MS
+    }
+  });
   const params = {
     ApplicationId: props.ApplicationId,
     ConfigurationProfileId: props.ConfigurationProfileId,
@@ -51,7 +65,12 @@ async function createConfigurationVersion(props) {
 
 async function deleteConfigurationVersion(physicalId, props) {
   console.log('deleteConfigurationVersion', props);
-  const appconfig = new AppConfig();
+  const appconfig = new AppConfig({
+    maxRetries: RETRY_MAX,
+    retryDelayOptions: {
+      base: RETRY_BASE_MS
+    }
+  });
   const params = {
     ApplicationId: props.ApplicationId,
     ConfigurationProfileId: props.ConfigurationProfileId,

@@ -61,7 +61,8 @@ export class HostedConfigurationVersion extends cdk.Resource implements IHostedC
       runtime: lambda.Runtime.NODEJS_14_X,
       code: lambda.Code.fromAsset(HANDLER_CODE_PATH),
       handler: 'index.onEvent',
-      uuid: 'c67842de-c9ed-4cbb-906f-3b490af456b8'
+      uuid: 'd9e6c544-62d9-4991-8587-c05873c14f91',
+      timeout: cdk.Duration.minutes(15)
     });
 
     onEventHandler.addToRolePolicy(
