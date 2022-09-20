@@ -1,0 +1,10 @@
+{
+  "retryAppConfig": {
+    "max": 12,
+    "base": 100
+  },
+  "retryS3": {
+    "max": 12,
+    "base": 100
+  }
+}
