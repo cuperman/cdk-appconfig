@@ -1,5 +1,11 @@
 const S3 = require('aws-sdk/clients/s3');
 const AppConfig = require('aws-sdk/clients/appconfig');
+const config = require('config');
+
+const RETRY_APPCONFIG_MAX = config.get('retryAppConfig.max');
+const RETRY_APPCONFIG_BASE_MS = config.get('retryAppConfig.base');
+const RETRY_S3_MAX = config.get('retryS3.max');
+const RETRY_S3_BASE_MS = config.get('retryS3.base');
 
 async function getContent(contentConfig) {
   console.log('getContent', contentConfig);
@@ -15,7 +21,12 @@ async function getContent(contentConfig) {
     throw new Error(`ContentConfig requires either InlineContent or S3Location`);
   }
 
-  const s3 = new S3();
+  const s3 = new S3({
+    maxRetries: RETRY_S3_MAX,
+    retryDelayOptions: {
+      base: RETRY_S3_BASE_MS
+    }
+  });
 
   const params = {
     Bucket: s3Location.BucketName,
@@ -33,7 +44,12 @@ async function createConfigurationVersion(props) {
   console.log('createConfigurationVersion', props);
   const content = await getContent(props.ContentConfig);
 
-  const appconfig = new AppConfig();
+  const appconfig = new AppConfig({
+    maxRetries: RETRY_APPCONFIG_MAX,
+    retryDelayOptions: {
+      base: RETRY_APPCONFIG_BASE_MS
+    }
+  });
   const params = {
     ApplicationId: props.ApplicationId,
     ConfigurationProfileId: props.ConfigurationProfileId,
@@ -51,7 +67,12 @@ async function createConfigurationVersion(props) {
 
 async function deleteConfigurationVersion(physicalId, props) {
   console.log('deleteConfigurationVersion', props);
-  const appconfig = new AppConfig();
+  const appconfig = new AppConfig({
+    maxRetries: RETRY_APPCONFIG_MAX,
+    retryDelayOptions: {
+      base: RETRY_APPCONFIG_BASE_MS
+    }
+  });
   const params = {
     ApplicationId: props.ApplicationId,
     ConfigurationProfileId: props.ConfigurationProfileId,

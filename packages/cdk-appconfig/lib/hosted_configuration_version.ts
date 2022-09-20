@@ -30,6 +30,11 @@ export interface IHostedConfigurationVersion {
   readonly hostedConfigurationVersionArn: string;
 }
 
+export interface RetryOptions {
+  readonly maxRetries: number;
+  readonly baseDelay: cdk.Duration;
+}
+
 export interface HostedConfigurationVersionProps {
   readonly application: IApplication;
   readonly configurationProfile: IConfigurationProfile;
@@ -39,6 +44,8 @@ export interface HostedConfigurationVersionProps {
   readonly latestVersionNumber?: string;
   readonly initOnly?: boolean;
   readonly removalPolicy?: cdk.RemovalPolicy;
+  readonly appConfigRetryOptions?: RetryOptions;
+  readonly s3RetryOptions?: RetryOptions;
 }
 
 export class HostedConfigurationVersion extends cdk.Resource implements IHostedConfigurationVersion {
@@ -57,12 +64,25 @@ export class HostedConfigurationVersion extends cdk.Resource implements IHostedC
 
     const contentConfig = props.content.bind(this);
 
-    const onEventHandler = new lambda.SingletonFunction(this, 'OnEventHandler', {
+    const onEventHandler = new lambda.Function(this, 'OnEventHandler', {
       runtime: lambda.Runtime.NODEJS_14_X,
       code: lambda.Code.fromAsset(HANDLER_CODE_PATH),
       handler: 'index.onEvent',
-      uuid: 'c67842de-c9ed-4cbb-906f-3b490af456b8'
+      // uuid: 'c67842de-c9ed-4cbb-906f-3b490af456b8'
+      timeout: props.appConfigRetryOptions || props.s3RetryOptions ? cdk.Duration.minutes(15) : undefined
     });
+
+    if (props.appConfigRetryOptions) {
+      const { maxRetries, baseDelay } = props.appConfigRetryOptions;
+      onEventHandler.addEnvironment('RETRY_APPCONFIG_MAX', maxRetries.toString());
+      onEventHandler.addEnvironment('RETRY_APPCONFIG_BASE_MS', baseDelay.toMilliseconds().toString());
+    }
+
+    if (props.s3RetryOptions) {
+      const { maxRetries, baseDelay } = props.s3RetryOptions;
+      onEventHandler.addEnvironment('RETRY_S3_MAX', maxRetries.toString());
+      onEventHandler.addEnvironment('RETRY_S3_BASE_MS', baseDelay.toMilliseconds().toString());
+    }
 
     onEventHandler.addToRolePolicy(
       new iam.PolicyStatement({

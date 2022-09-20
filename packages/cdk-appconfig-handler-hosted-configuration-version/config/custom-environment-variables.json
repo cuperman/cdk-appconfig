@@ -1,0 +1,22 @@
+{
+  "retryAppConfig": {
+    "max": {
+      "__name": "RETRY_APPCONFIG_MAX",
+      "__format": "number"
+    },
+    "base": {
+      "__name": "RETRY_APPCONFIG_BASE_MS",
+      "__format": "number"
+    }
+  },
+  "retryS3": {
+    "max": {
+      "__name": "RETRY_S3_MAX",
+      "__format": "number"
+    },
+    "base": {
+      "__name": "RETRY_S3_BASE_MS",
+      "__format": "number"
+    }
+  }
+}
