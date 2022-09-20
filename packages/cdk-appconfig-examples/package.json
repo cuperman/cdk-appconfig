@@ -2,7 +2,7 @@
   "name": "@cuperman/cdk-appconfig-examples",
   "description": "CDK examples for using AppConfig constructs",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1-alpha.0",
   "author": {
     "name": "Jeff Cooper",
     "email": "jeff@cuperman.net"
@@ -39,8 +39,8 @@
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@cuperman/cdk-appconfig": "^1.0.0",
-    "@cuperman/cdk-appconfig-handler-hello-world": "^1.0.0",
+    "@cuperman/cdk-appconfig": "^1.0.1-alpha.0",
+    "@cuperman/cdk-appconfig-handler-hello-world": "^1.0.1-alpha.0",
     "aws-cdk-lib": "2.38.1",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.16"
