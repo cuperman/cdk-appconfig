@@ -48,7 +48,7 @@ describe('AppConfig', () => {
         name: 'My App'
       });
       const lambdaValidatorHandler = new lambda.Function(stack, 'LambdaValidatorHandler', {
-        runtime: lambda.Runtime.NODEJS_12_X,
+        runtime: lambda.Runtime.NODEJS_14_X,
         code: lambda.Code.fromInline(`
             exports.handler = function(event) {
               return true;

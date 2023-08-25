@@ -194,7 +194,7 @@ describe('AppConfig', () => {
         });
 
         const fn = new lambda.Function(stack, 'MyFunction', {
-          runtime: lambda.Runtime.NODEJS_12_X,
+          runtime: lambda.Runtime.NODEJS_14_X,
           code: lambda.Code.fromInline(`
               exports.handler = async () => {
                 return 'Hello, World!'
@@ -240,7 +240,7 @@ describe('AppConfig', () => {
         });
 
         const fn = new lambda.Function(stack, 'MyFunction', {
-          runtime: lambda.Runtime.NODEJS_12_X,
+          runtime: lambda.Runtime.NODEJS_14_X,
           code: lambda.Code.fromInline(`
               exports.handler = async () => {
                 return 'Hello, World!'

@@ -13,7 +13,7 @@ describe('AppConfig', () => {
     describe('with default props', () => {
       it('uses region pseudo parameters to determine resource arn', () => {
         const fn = new lambda.Function(stack, 'MyLambda1', {
-          runtime: lambda.Runtime.NODEJS_12_X,
+          runtime: lambda.Runtime.NODEJS_14_X,
           code: lambda.Code.fromInline(`
             exports.handler = async () => {
               return 'Hello, World!';
@@ -49,7 +49,7 @@ describe('AppConfig', () => {
 
         it('uses specified region to determine resource arn', () => {
           const fn = new lambda.Function(stack, 'MyLambda', {
-            runtime: lambda.Runtime.NODEJS_12_X,
+            runtime: lambda.Runtime.NODEJS_14_X,
             code: lambda.Code.fromInline(`
               exports.handler = async () => {
                 return 'Hello, World!';
