@@ -54,7 +54,7 @@ export class LambdaExtensionStack extends cdk.Stack {
     });
 
     const helloWorldFunction = new lambda.Function(this, 'HelloWorldFunction', {
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset(HELLO_WORLD_CODE_PATH),
       handler: 'index.lambdaHandler',
       environment: {
