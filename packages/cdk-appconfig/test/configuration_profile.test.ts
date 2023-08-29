@@ -1,3 +1,8 @@
+// Workaround for deprecated @aws-cdk/assert dependency on global TextDecoder
+import { TextDecoder } from 'util';
+(global as any).TextDecoder = TextDecoder;
+// End workaround
+
 import { expect as expectCDK, haveResource, anything, ResourcePart, haveResourceLike, Capture } from '@aws-cdk/assert';
 import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
