@@ -58,7 +58,7 @@ export class HostedConfigurationVersion extends cdk.Resource implements IHostedC
     const contentConfig = props.content.bind(this);
 
     const onEventHandler = new lambda.SingletonFunction(this, 'OnEventHandler', {
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       code: lambda.Code.fromAsset(HANDLER_CODE_PATH),
       handler: 'index.onEvent',
       uuid: 'c67842de-c9ed-4cbb-906f-3b490af456b8'
