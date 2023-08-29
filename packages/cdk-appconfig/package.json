@@ -27,11 +27,11 @@
     "prepublishOnly": "yarn test && yarn package"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^2.0.0",
+    "@aws-cdk/assert": "2.68.0",
     "@types/jest": "^26.0.10",
     "@types/node": "^14.0.0",
-    "aws-cdk-lib": "2.38.1",
-    "constructs": "10.1.84",
+    "aws-cdk-lib": "2.93.0",
+    "constructs": "10.2.70",
     "jest": "^26.4.2",
     "jsii": "^1.27.0",
     "jsii-pacmak": "^1.27.0",
@@ -42,8 +42,8 @@
     "@cuperman/cdk-appconfig-handler-hosted-configuration-version": "^1.0.0"
   },
   "peerDependencies": {
-    "aws-cdk-lib": "^2.38.1",
-    "constructs": "^10.1.84"
+    "aws-cdk-lib": "^2.93.0",
+    "constructs": "^10.2.70"
   },
   "bundledDependencies": [
     "@cuperman/cdk-appconfig-handler-hosted-configuration-version"

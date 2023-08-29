@@ -1,3 +1,8 @@
+// Workaround for deprecated @aws-cdk/assert dependency on global TextDecoder
+import { TextDecoder } from 'util';
+(global as any).TextDecoder = TextDecoder;
+// End workaround
+
 import * as path from 'path';
 
 import * as cdk from 'aws-cdk-lib';

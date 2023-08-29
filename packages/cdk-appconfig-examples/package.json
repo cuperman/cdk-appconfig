@@ -29,10 +29,10 @@
     "prepublishOnly": "yarn test"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "2.38.1",
+    "@aws-cdk/assert": "2.68.0",
     "@types/jest": "^26.0.10",
     "@types/node": "^14.0.0",
-    "aws-cdk": "2.38.1",
+    "aws-cdk": "2.93.0",
     "jest": "^26.4.2",
     "ts-jest": "^26.2.0",
     "ts-node": "^9.0.0",
@@ -41,7 +41,7 @@
   "dependencies": {
     "@cuperman/cdk-appconfig": "^1.0.0",
     "@cuperman/cdk-appconfig-handler-hello-world": "^1.0.0",
-    "aws-cdk-lib": "2.38.1",
+    "aws-cdk-lib": "2.93.0",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.16"
   }
