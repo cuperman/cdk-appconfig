@@ -19,3 +19,7 @@ jobs:
       - run: yarn lerna bootstrap
 
       - run: yarn lerna run test
+
+      - name: publish
+        if: github.event_name == 'release'
+        run: yarn lerna publish --from-git
